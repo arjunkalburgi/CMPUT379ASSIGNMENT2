@@ -56,8 +56,8 @@ int main()
 		// 	ntohl (number));
 		fgets(str, sizeof(str), stdin);
 		write (s, &str, sizeof (str));
-		close (s);
-
+		
 		sleep (2);
 	}
+	close (s);
 }
