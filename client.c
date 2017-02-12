@@ -69,7 +69,6 @@ void communicate(int s, char str[]) {
 		if (str[0] = '1') {
 			break; 
 		}
-
 		sleep (2);
 	}
 	close (s);

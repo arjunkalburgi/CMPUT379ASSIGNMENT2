@@ -14,10 +14,17 @@
  distinct numbers. The server and the clients may run on different ma-
  chines.
  --------------------------------------------------------------------- */
-int connect() {
-	int	sock, snew, fromlength, number, outnum;
+struct socket_stuff {
+	int sock; 
+	int socket; 
+	struct from; 
 
-	struct	sockaddr_in	master, from;
+};
+
+int connect(int sock, int fromlength, struct sockaddr_in from) {
+	int	snew;
+
+	struct	sockaddr_in	master;
 
 	sock = socket (AF_INET, SOCK_STREAM, 0);
 	if (sock < 0) {
@@ -50,10 +57,11 @@ int connect() {
 	return snew; 
 }
 
-void communicate(int s, char str[]) {
+void communicate(int sock, int fromlength, struct sockaddr_in from, int s, char str[]) {
 	while (1) {
-		snew = accept (sock, (struct sockaddr*) & from, & fromlength);
-		read (snew, &str, sizeof (str));
+		fromlength = sizeof (from);
+		s = accept (sock, (struct sockaddr*) & from, & fromlength);
+		read (s, &str, sizeof (str));
 		fprintf (stderr, "The client sent you %s\n", str);
 
 		if (str[0] = '1') {
@@ -61,15 +69,17 @@ void communicate(int s, char str[]) {
 		}
 	}
 
-	close (snew);
 	// 	// write (snew, &outnum, sizeof (outnum));
 }
 
 int main() {
-	int	s;
+	int	sock, socket, fromlength;
+	struct sockaddr_in	from;
 	char str[100];
 
-	s = connect(); 
+	socket = connect(sock, fromlength, from); 
 
-	communicate(s, str); 
+	communicate(sock, fromlength, from, socket, str); 
+
+	close (socket);
 }
