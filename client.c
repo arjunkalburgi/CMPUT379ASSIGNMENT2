@@ -14,9 +14,8 @@
  the server need not run on the same machine.
  --------------------------------------------------------------------- */
 
-int main()
-{
-	int	s, number;
+int connect() {
+	int socket; 
 
 	struct	sockaddr_in	server;
 
@@ -29,13 +28,12 @@ int main()
 		exit (1);
 	}
 
-	char str[100];
 
 	while (1) {
 
-		s = socket (AF_INET, SOCK_STREAM, 0);
+		socket = socket (AF_INET, SOCK_STREAM, 0);
 
-		if (s < 0) {
+		if (socket < 0) {
 			perror ("Client: cannot open socket");
 			exit (1);
 		}
@@ -45,19 +43,45 @@ int main()
 		server.sin_family = host->h_addrtype;
 		server.sin_port = htons (MY_PORT);
 
-		if (connect (s, (struct sockaddr*) & server, sizeof (server))) {
+		if (connect (socket, (struct sockaddr*) & server, sizeof (server))) {
 			perror ("Client: cannot connect to server");
 			exit (1);
 		}
 
+		sleep (2);
+	}
+
+	printf("You are now connected to the server. Socket descriptor: %s\n", socket);
+}
+
+void communicate(int s, char str[]) {
+	while (1) {
+		// read
 		// read (s, &number, sizeof (number));
 		// close (s);
 		// fprintf (stderr, "Process %d gets number %d\n", getpid (),
 		// 	ntohl (number));
-		fgets(str, sizeof(str), stdin);
+		
+		// write
+		fgets(str, sizeof(str), stdin); // block
 		write (s, &str, sizeof (str));
-		close (s);
+
+		if (str[0] = '1') {
+			break; 
+		}
 
 		sleep (2);
 	}
+	close (s);
+}
+
+
+int main() {
+	int	s;
+	char str[100];
+
+	s = connect(); 
+
+	communicate(s, str); 
+
 }

@@ -14,15 +14,10 @@
  distinct numbers. The server and the clients may run on different ma-
  chines.
  --------------------------------------------------------------------- */
-
-int main()
-{
+int connect() {
 	int	sock, snew, fromlength, number, outnum;
 
-	char str[100];
-
 	struct	sockaddr_in	master, from;
-
 
 	sock = socket (AF_INET, SOCK_STREAM, 0);
 	if (sock < 0) {
@@ -39,26 +34,42 @@ int main()
 		exit (1);
 	}
 
-	number = 0;
-
 	listen (sock, 5);
 
-	// while (1) {
-	// 	fromlength = sizeof (from);
-	// 	snew = accept (sock, (struct sockaddr*) & from, & fromlength);
-	// 	if (snew < 0) {
-	// 		perror ("Server: accept failed");
-	// 		exit (1);
-	// 	}
-	// 	outnum = htonl (number);
-	// 	// write (snew, &outnum, sizeof (outnum));
-	// 	close (snew);
-	// 	number++;
-	// }
+	while (1) {
+		fromlength = sizeof (from);
+		snew = accept (sock, (struct sockaddr*) & from, & fromlength);
+		if (snew < 0) {
+			perror ("Server: accept failed");
+			exit (1);
+		}
+	}
+
+	printf("Client is now connected.\n");
+
+	return snew; 
+}
+
+void communicate(int s, char str[]) {
 	while (1) {
 		snew = accept (sock, (struct sockaddr*) & from, & fromlength);
 		read (snew, &str, sizeof (str));
-		close (snew);
 		fprintf (stderr, "The client sent you %s\n", str);
+
+		if (str[0] = '1') {
+			break; 
+		}
 	}
+
+	close (snew);
+	// 	// write (snew, &outnum, sizeof (outnum));
+}
+
+int main() {
+	int	s;
+	char str[100];
+
+	s = connect(); 
+
+	communicate(s, str); 
 }
