@@ -58,7 +58,7 @@ int main()
 	while (1) {
 		snew = accept (sock, (struct sockaddr*) & from, & fromlength);
 		read (snew, &str, sizeof (str));
-		close (snew);
 		fprintf (stderr, "The client sent you %s\n", str);
 	}
+	close (snew);
 }
