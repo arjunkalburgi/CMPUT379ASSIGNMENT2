@@ -14,12 +14,8 @@
  distinct numbers. The server and the clients may run on different ma-
  chines.
  --------------------------------------------------------------------- */
-
-int main()
-{
-	int	sock, snew, fromlength, number, outnum;
-
-	char str[100];
+int connect_socket() {
+	int	sock;
 
 	struct	sockaddr_in	master, from;
 	printf("start\n");
@@ -40,9 +36,14 @@ int main()
 		exit (1);
 	}
 
-	number = 0;
-
 	listen (sock, 5);
+	return sock; 
+}
+
+void talk(int sock) {
+	char str[100];
+	int	snew, fromlength;
+	struct	sockaddr_in	from;
 
 	// while (1) {
 	// 	fromlength = sizeof (from);
@@ -57,17 +58,28 @@ int main()
 	// 	number++;
 	// }
 	while (1) {
+		fromlength = sizeof (from);
 		snew = accept (sock, (struct sockaddr*) & from, & fromlength);
 		read (snew, &str, sizeof (str));
 		//server_function(str, snew); 
-		fprintf (stderr, "The client sent you %s\n", str);
+		fprintf (stderr, "The client sent you: %s", str);
 
 		if (str[0] == 'e') {
 			break; 
 		}
 
 	}
+}
 
+
+int main()
+{
+	char str[100];
+	int	snew, fromlength;
+	struct	sockaddr_in	from;
+
+	int sock = connect_socket(); 
+	talk(sock); 
 
 	close (snew);
 }
