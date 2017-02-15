@@ -45,14 +45,19 @@ void talk(int sock) {
 	while (1) {
 		fromlength = sizeof (from);
 		snew = accept (sock, (struct sockaddr*) & from, & fromlength);
-		read (snew, &str, sizeof (str));
+		int num = read (snew, &str, 100);
 
-		//decrypt 
-		//server sanitize 
-		//server switch (main function) server_function(str, snew);
+		// convert to base 256
+		// decrypt 
+		// server sanitize 
+		// server switch (main function) server_function(str, snew);
 			// switch to ? or ! or @
+		int lol;
+		printf ("The client sent you: ");
+		for (lol = 0; lol < num; lol++) {
+			fprintf(stderr, "%d ", str[lol]); 
+		}
 
-		fprintf (stderr, "The client sent you: %s", str);
 
 		if (str[0] == 'e') {
 			break; 

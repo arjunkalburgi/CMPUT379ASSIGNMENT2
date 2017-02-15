@@ -14,7 +14,7 @@ void connect_and_talk() {
 		exit (1);
 	}
 
-	char str[100];
+	char str[1000];
 	printf("start\n");
 
 	while (1) {
@@ -38,7 +38,9 @@ void connect_and_talk() {
 
 		fgets(str, sizeof(str), stdin);
 		// client sanitize (formatting)
-		// decrypt 
+		// encrypt
+		do_crypt(str);
+		// convert to base64
 		write (s, &str, sizeof (str));
 
 		// read
