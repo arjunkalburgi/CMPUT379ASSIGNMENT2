@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <strings.h>
 
-#define	 MY_PORT  2222
+#define	 MY_PORT  8081
 
 /* ---------------------------------------------------------------------
  This is a sample client program for the number server. The client and
@@ -30,6 +30,7 @@ int main()
 	}
 
 	char str[100];
+	printf("start\n");
 
 	while (1) {
 
@@ -56,7 +57,11 @@ int main()
 		// 	ntohl (number));
 		fgets(str, sizeof(str), stdin);
 		write (s, &str, sizeof (str));
-		
+
+		if (str[0] == 'e') {
+			break; 
+		}
+
 		sleep (2);
 	}
 	close (s);

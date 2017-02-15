@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define	MY_PORT	2222
+#define	MY_PORT	8081
 
 /* ---------------------------------------------------------------------
  This	is  a sample server which opens a stream socket and then awaits
@@ -22,6 +22,7 @@ int main()
 	char str[100];
 
 	struct	sockaddr_in	master, from;
+	printf("start\n");
 
 
 	sock = socket (AF_INET, SOCK_STREAM, 0);
@@ -58,7 +59,25 @@ int main()
 	while (1) {
 		snew = accept (sock, (struct sockaddr*) & from, & fromlength);
 		read (snew, &str, sizeof (str));
+		//server_function(str, snew); 
 		fprintf (stderr, "The client sent you %s\n", str);
+
+		if (str[0] == 'e') {
+			break; 
+		}
+
 	}
+
+
 	close (snew);
 }
+
+// void server_function (char str[], int socket) {
+
+// 	// parse string: exit or command?
+// 		// call command function
+
+
+
+// 	return; 
+// }
