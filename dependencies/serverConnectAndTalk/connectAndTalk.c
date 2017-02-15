@@ -46,7 +46,12 @@ void talk(int sock) {
 		fromlength = sizeof (from);
 		snew = accept (sock, (struct sockaddr*) & from, & fromlength);
 		read (snew, &str, sizeof (str));
-		//server_function(str, snew); 
+
+		//decrypt 
+		//server sanitize 
+		//server switch (main function) server_function(str, snew);
+			// switch to ? or ! or @
+
 		fprintf (stderr, "The client sent you: %s", str);
 
 		if (str[0] == 'e') {

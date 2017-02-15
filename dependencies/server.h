@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "connectAndTalk.h"
+#include "serverConnectAndTalk/connectAndTalk.h"
 
 #define	MY_PORT	8080
 

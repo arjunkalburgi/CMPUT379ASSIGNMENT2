@@ -36,11 +36,13 @@ void connect_and_talk() {
 			exit (1);
 		}
 
-		// read (s, &number, sizeof (number));
-		// close (s);
-		// fprintf (stderr, "Process %d gets number %d\n", getpid (),
 		fgets(str, sizeof(str), stdin);
+		// client sanitize (formatting)
+		// decrypt 
 		write (s, &str, sizeof (str));
+
+		// read
+		// read (s, &number, sizeof (number));
 
 		if (str[0] == 'e') {
 			break; 

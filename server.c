@@ -1,4 +1,4 @@
-#include "./server_files/server.h"
+#include "./dependencies/server.h"
 
 int main() {
 	char str[100];
