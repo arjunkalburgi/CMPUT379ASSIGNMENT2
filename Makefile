@@ -6,8 +6,8 @@ clean:
 	@rm -f client
 	@rm -f server
 
-client: client.c 
-	$(CC) $< -o client 
+client: client.c ./client_files/connectAndTalk.c
+	$(CC) $< ./client_files/connectAndTalk.c -o client 
 
-server: server.c 
-	$(CC) $< -o server
+server: server.c ./server_files/connectAndTalk.c 
+	$(CC) $< ./server_files/connectAndTalk.c -o server
