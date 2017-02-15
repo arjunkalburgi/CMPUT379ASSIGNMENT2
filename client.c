@@ -13,9 +13,7 @@
  This is a sample client program for the number server. The client and
  the server need not run on the same machine.
  --------------------------------------------------------------------- */
-
-int main()
-{
+void connect_and_talk() {
 	int	s, number;
 
 	struct	sockaddr_in	server;
@@ -54,7 +52,6 @@ int main()
 		// read (s, &number, sizeof (number));
 		// close (s);
 		// fprintf (stderr, "Process %d gets number %d\n", getpid (),
-		// 	ntohl (number));
 		fgets(str, sizeof(str), stdin);
 		write (s, &str, sizeof (str));
 
@@ -65,4 +62,9 @@ int main()
 		sleep (2);
 	}
 	close (s);
+}
+
+
+int main() {
+	connect_and_talk(); 
 }
