@@ -1,12 +1,17 @@
 #include "./connectAndTalk.h"
 
 void connect_and_talk() {
-	int	s, number;
+	//read vars
+	char strr[100];
+	int s_read, fromlength; 
+	struct	sockaddr_in	from;
+	int connected = 0; 
 
+	//write vars 
+	int	s;
+	char str[1000];
 	struct	sockaddr_in	server;
-
 	struct	hostent		*host;
-
 	host = gethostbyname ("localhost");
 
 	if (host == NULL) {
@@ -14,7 +19,6 @@ void connect_and_talk() {
 		exit (1);
 	}
 
-	char str[1000];
 	printf("start\n");
 
 	while (1) {
@@ -34,6 +38,16 @@ void connect_and_talk() {
 		if (connect (s, (struct sockaddr*) & server, sizeof (server))) {
 			perror ("Client: cannot connect to server");
 			exit (1);
+		} else if (!connected) {
+			fromlength = sizeof (from);
+			s_read = accept (s, (struct sockaddr*) & from, & fromlength);
+			int num = read (s_read, &strr, 100);
+			if (str[0] == 'c') {
+				printf("Connection has been established, you may beginning typing.\n");
+			} else {
+				printf("Broken connection, please reconnect\n");
+			}
+			connected = 1; 
 		}
 
 		fgets(str, sizeof(str), stdin);

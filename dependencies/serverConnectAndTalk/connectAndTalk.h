@@ -6,7 +6,7 @@
 #include "../encryption/base64enc-dec.h"
 
 int connect_socket();
-void connection_established(); 
+void connection_established(int sock); 
 void talk(int sock);
 
 #endif

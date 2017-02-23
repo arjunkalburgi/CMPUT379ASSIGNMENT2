@@ -25,8 +25,9 @@ int connect_socket() {
 	return sock; 
 }
 
-void connection_established() {
-
+void connection_established(int sock) {
+	char str[25] = "connection_established";
+	write(sock, &str, sizeof(str));
 }
 
 void talk(int sock) {
@@ -41,10 +42,8 @@ void talk(int sock) {
 	// 		perror ("Server: accept failed");
 	// 		exit (1);
 	// 	}
-	// 	outnum = htonl (number);
-	// 	// write (snew, &outnum, sizeof (outnum));
+	// 	// write (snew, &sendingthing, sizeof (sendingthing));
 	// 	close (snew);
-	// 	number++;
 	// }
 	while (1) {
 		fromlength = sizeof (from);
@@ -54,10 +53,10 @@ void talk(int sock) {
 		char * strptr = base64decode((void *)str, strlen(str)); // convert to base 256
 		strncpy(str, strptr, sizeof(str)-1); 
 		de_crypt(str); // decrypt 
+		printf ("The client sent you: %s", str);
 		// server sanitize 
 		// server switch (main function) server_function(str, snew);
 			// switch to ? or ! or @
-		printf ("The client sent you: %s", str);
 
 		if (str[0] == 'e') {
 			break; 
