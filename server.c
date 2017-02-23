@@ -6,6 +6,7 @@ int main() {
 	struct	sockaddr_in	from;
 
 	int sock = connect_socket(); 
+	connection_established(); 
 	talk(sock); 
 	printf("DONE!\n");
 

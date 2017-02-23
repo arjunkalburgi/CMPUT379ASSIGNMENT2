@@ -38,9 +38,9 @@ void connect_and_talk() {
 
 		fgets(str, sizeof(str), stdin);
 		// client sanitize (formatting)
-		// encrypt
-		do_crypt(str);
-		// convert to base64
+		do_crypt(str); // encrypt
+		char * strptr = base64encode((void *)str, strlen(str)); // convert to base64
+		strncpy(str, strptr, sizeof(str)-1); 
 		write (s, &str, sizeof (str));
 
 		// read

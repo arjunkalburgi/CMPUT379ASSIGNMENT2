@@ -1,12 +1,12 @@
 #ifndef _CONNECTANDTALK_H_
 #define _CONNECTANDTALK_H_
 
+#include "../client.h"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include "../encryption/cryption.h"
-
-#define	 MY_PORT  8080
+#include "../encryption/base64enc-dec.h"
 
 void connectAndTalk(int sock); 
 

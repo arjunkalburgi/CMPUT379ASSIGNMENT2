@@ -25,6 +25,10 @@ int connect_socket() {
 	return sock; 
 }
 
+void connection_established() {
+
+}
+
 void talk(int sock) {
 	char str[100];
 	int	snew, fromlength;
@@ -47,17 +51,13 @@ void talk(int sock) {
 		snew = accept (sock, (struct sockaddr*) & from, & fromlength);
 		int num = read (snew, &str, 100);
 
-		// convert to base 256
-		// decrypt 
+		char * strptr = base64decode((void *)str, strlen(str)); // convert to base 256
+		strncpy(str, strptr, sizeof(str)-1); 
+		de_crypt(str); // decrypt 
 		// server sanitize 
 		// server switch (main function) server_function(str, snew);
 			// switch to ? or ! or @
-		int lol;
-		printf ("The client sent you: ");
-		for (lol = 0; lol < num; lol++) {
-			fprintf(stderr, "%d ", str[lol]); 
-		}
-
+		printf ("The client sent you: %s", str);
 
 		if (str[0] == 'e') {
 			break; 
