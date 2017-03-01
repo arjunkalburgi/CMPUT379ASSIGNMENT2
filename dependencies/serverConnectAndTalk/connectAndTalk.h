@@ -2,8 +2,8 @@
 #define _CONNECTANDTALK_H_
 
 #include "../server.h"
-#include "../encryption/cryption.h"
-#include "../encryption/base64enc-dec.h"
+#include <pthread.h>
+#include "talk.h"
 
 int connect_socket();
 void connection_established(); 

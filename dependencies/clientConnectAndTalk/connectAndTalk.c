@@ -17,25 +17,25 @@ void connect_and_talk() {
 	char str[1000];
 	printf("start\n");
 
-	while (1) {
 
-		s = socket (AF_INET, SOCK_STREAM, 0);
+	s = socket (AF_INET, SOCK_STREAM, 0);
 
-		if (s < 0) {
-			perror ("Client: cannot open socket");
-			exit (1);
-		}
+	if (s < 0) {
+		perror ("Client: cannot open socket");
+		exit (1);
+	}
 
-		bzero (&server, sizeof (server));
-		bcopy (host->h_addr, & (server.sin_addr), host->h_length);
-		server.sin_family = host->h_addrtype;
-		server.sin_port = htons (MY_PORT);
+	bzero (&server, sizeof (server));
+	bcopy (host->h_addr, & (server.sin_addr), host->h_length);
+	server.sin_family = host->h_addrtype;
+	server.sin_port = htons (MY_PORT);
 
-		if (connect (s, (struct sockaddr*) & server, sizeof (server))) {
-			perror ("Client: cannot connect to server");
-			exit (1);
-		}
-
+	if (connect (s, (struct sockaddr*) & server, sizeof (server))) {
+		perror ("Client: cannot connect to server");
+		exit (1);
+	}
+	
+	while(1) {
 		fgets(str, sizeof(str), stdin);
 		// client sanitize (formatting)
 		do_crypt(str); // encrypt
@@ -49,8 +49,7 @@ void connect_and_talk() {
 		if (str[0] == 'e') {
 			break; 
 		}
-
-		sleep (2);
 	}
+	printf("TY\n");
 	close (s);
 }

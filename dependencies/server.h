@@ -10,5 +10,6 @@
 #include "serverConnectAndTalk/connectAndTalk.h"
 
 #define	MY_PORT	8080
+#define NUM_THREADS 10
 
 #endif

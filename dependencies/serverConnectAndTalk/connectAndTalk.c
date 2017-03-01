@@ -12,6 +12,9 @@ int connect_socket() {
 		exit (1);
 	}
 
+	if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &(int){ 1 }, sizeof(int))<0)
+		error("setsockopt(SO_REUSEADDR) failed");
+
 	master.sin_family = AF_INET; //UNIX
 	master.sin_addr.s_addr = inet_addr("127.0.0.1"); //INADDR_ANY;
 	master.sin_port = htons (MY_PORT);
@@ -30,38 +33,17 @@ void connection_established() {
 }
 
 void talk(int sock) {
-	char str[100];
-	int	snew, fromlength;
-	struct	sockaddr_in	from;
+	int	i, fromlength;
+	struct sockaddr_in	from;
+	pthread_t thread[NUM_THREADS];
 
-	// while (1) {
-	// 	fromlength = sizeof (from);
-	// 	snew = accept (sock, (struct sockaddr*) & from, & fromlength);
-	// 	if (snew < 0) {
-	// 		perror ("Server: accept failed");
-	// 		exit (1);
-	// 	}
-	// 	outnum = htonl (number);
-	// 	// write (snew, &outnum, sizeof (outnum));
-	// 	close (snew);
-	// 	number++;
-	// }
+	i = 0; 
 	while (1) {
 		fromlength = sizeof (from);
-		snew = accept (sock, (struct sockaddr*) & from, & fromlength);
-		int num = read (snew, &str, 100);
-
-		char * strptr = base64decode((void *)str, strlen(str)); // convert to base 256
-		strncpy(str, strptr, sizeof(str)-1); 
-		de_crypt(str); // decrypt 
-		// server sanitize 
-		// server switch (main function) server_function(str, snew);
-			// switch to ? or ! or @
-		printf ("The client sent you: %s", str);
-
-		if (str[0] == 'e') {
-			break; 
-		}
+		int snew = accept (sock, (struct sockaddr*) & from, & fromlength); // look for client to connect 
+		// make a client thread 
+		pthread_create(&thread[i], NULL, server_thread, (void *) &snew);
+		i++; 
 	}
-	close (snew);
+	// join all threads 
 }
