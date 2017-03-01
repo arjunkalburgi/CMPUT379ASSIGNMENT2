@@ -37,6 +37,13 @@ void connect_and_talk() {
 	
 	while(1) {
 		fgets(str, sizeof(str), stdin);
+
+		if (str[0] == 'e') {
+			printf("TY\n");
+			close (s);
+			return; 
+		}
+
 		// client sanitize (formatting)
 		do_crypt(str); // encrypt
 		char * strptr = base64encode((void *)str, strlen(str)); // convert to base64
@@ -46,10 +53,6 @@ void connect_and_talk() {
 		// read
 		// read (s, &number, sizeof (number));
 
-		if (str[0] == 'e') {
-			break; 
-		}
+		sleep(2);
 	}
-	printf("TY\n");
-	close (s);
 }
