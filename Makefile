@@ -1,6 +1,6 @@
 CC=gcc 
 cCAT=./dependencies/clientConnectAndTalk/connectAndTalk.c
-sCAT=./dependencies/serverConnectAndTalk/connectAndTalk.c
+sC=./dependencies/serverConnectAndTalk/connect.c
 sT=./dependencies/serverConnectAndTalk/talk.c
 encryp=./dependencies/encryption/cryption.c
 base=./dependencies/encryption/base64enc-dec.c
@@ -15,8 +15,8 @@ clean:
 client: client.c $(cCAT) cryption.o base64.o
 	$(CC) $< $(cCAT) cryption.o base64enc-dec.o -lcrypto -o client 
 
-server: server.c $(sCAT) $(sT) cryption.o base64.o 
-	$(CC) $< $(sCAT) $(sT) cryption.o base64enc-dec.o -pthread -lcrypto -o server
+server: server.c $(sC) $(sT) cryption.o base64.o 
+	$(CC) $< $(sC) $(sT) cryption.o base64enc-dec.o -pthread -lcrypto -o server
 
 cryption.o: $(encryp)
 	$(CC) $< -c

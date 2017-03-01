@@ -5,9 +5,8 @@ int main() {
 	int	snew, fromlength;
 	struct	sockaddr_in	from;
 
-	int sock = connect_socket(); 
-	connection_established(); 
-	talk(sock); 
+	int sock = create_socket(); 
+	connectClients(sock); 
 	printf("DONE!\n");
 
 }

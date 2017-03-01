@@ -1,6 +1,6 @@
-#include "./connectAndTalk.h"
+#include "./connect.h"
 
-int connect_socket() {
+int create_socket() {
 	int	sock;
 
 	struct	sockaddr_in	master, from;
@@ -28,22 +28,21 @@ int connect_socket() {
 	return sock; 
 }
 
-void connection_established() {
-
-}
-
-void talk(int sock) {
+void connectClients(int sock) {
 	int	i, fromlength;
 	struct sockaddr_in	from;
 	pthread_t thread[NUM_THREADS];
 
 	i = 0; 
-	while (1) {
+	while (i!=-1) {
 		fromlength = sizeof (from);
 		int snew = accept (sock, (struct sockaddr*) & from, & fromlength); // look for client to connect 
 		// make a client thread 
-		pthread_create(&thread[i], NULL, server_thread, (void *) &snew);
-		i++; 
+		if (i<NUM_THREADS) {
+			pthread_create(&thread[i], NULL, server_thread, (void *) &snew);
+			i++; 
+		}
 	}
-	// join all threads 
+	// if you get a signal to stop the client, set i=-1 and join all threads 
+	// if client exits, i--
 }

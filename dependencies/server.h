@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "serverConnectAndTalk/connectAndTalk.h"
+#include "serverConnectAndTalk/connect.h"
 
 #define	MY_PORT	8080
 #define NUM_THREADS 10
