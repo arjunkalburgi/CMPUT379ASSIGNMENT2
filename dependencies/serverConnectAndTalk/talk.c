@@ -8,8 +8,11 @@ void *server_thread(void * arg) {
 	while (1) {
 		int num = read (snew, &str, 100);
 		// printf("%d\n", num);
-		if (num == -1) {
-			continue; 
+
+		if (num < 0) {
+			close(snew); 
+			printf("Closed\n");
+			return (void *)0; 			
 		}
 
 		char * strptr = base64decode((void *)str, strlen(str)); // convert to base 256
