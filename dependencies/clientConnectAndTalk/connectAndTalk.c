@@ -78,6 +78,13 @@ void connect_and_talk() {
 						char substring[i];
 						memcpy(substring, &str[1], i-1);
 						//printf("the n value is %s \n",substring );
+
+						if(str[i+1] == '0'){
+							printf("clean?\n");
+							fgets(str, sizeof(str), stdin);
+							memcpy(str, "clean", 5);
+							break;
+						}
 						
 						int j = 0;
 						int k = i;
