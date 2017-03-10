@@ -1,7 +1,7 @@
 #include "cryption.h"
 
 void do_crypt(char intext[]) {
-	char outbuf[sizeof(intext)];
+	char outbuf[sizeof(intext)] = {0};
 	int outlen, tmplen, i;
 	/* Bogus key and IV: we'd normally set these from
 	* another source.
@@ -53,17 +53,21 @@ void de_crypt(char intext[]) {
 
 	if(!EVP_DecryptUpdate(&ctx, outbuf, &outlen, intext, strlen(intext))) {
 		/* Error */
-		// return 0;
+		printf("ERROR IN de_crypt 56\n");
+		return;
 	}
+	// printf("outlen 1 %d\n", outlen);
 
 	/* Buffer passed to EVP_EncryptFinal() must be after data just
 	* encrypted to avoid overwriting it.
 	*/
 	if(!EVP_DecryptFinal_ex(&ctx, outbuf + outlen, &tmplen)) {
 		/* Error */
-		// return 0;
+		printf("ERROR IN de_crypt 65\n"); 
+		return;
 	}
 	outlen += tmplen;
+	// printf("outlen 2 %d\n", outlen);
 	EVP_CIPHER_CTX_cleanup(&ctx);
 
 	/*for (i=0; i<=(outlen-1); i++){
@@ -71,5 +75,6 @@ void de_crypt(char intext[]) {
 	}
 
 	printf("\n");*/
+	bzero(intext, strlen(intext));
 	strncpy(intext, outbuf, outlen); 
 }
