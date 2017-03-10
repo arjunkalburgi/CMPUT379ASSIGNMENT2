@@ -92,7 +92,7 @@ void connect_and_talk() {
 							j++;
 							k++;
 						}
-						char len_of_update[j-1];
+						char len_of_update[j];
 						memcpy(len_of_update, &str[i+1], j);
 						//printf("the length of the update message is %s \n",len_of_update);
 						
@@ -107,7 +107,9 @@ void connect_and_talk() {
 
 							printf("the n'th value is %s \n",substring );
 
-							printf("the length of the update message is %s \n",len_of_update);
+							printf("the length of the update message should be %s \n",len_of_update);
+
+							printf("the actual length of the update message is %zu \n",strlen(str)-1);
 
 							printf("message is %s \n", str);
 						}
