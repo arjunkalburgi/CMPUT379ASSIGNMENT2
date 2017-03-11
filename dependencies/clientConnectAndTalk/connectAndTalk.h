@@ -9,5 +9,8 @@
 #include "../encryption/base64enc-dec.h"
 
 void connectAndTalk(int sock); 
+void socket_write(int socket, char str[]);
+void socket_read(int socket);
+int sanitize(char str[]);
 
 #endif

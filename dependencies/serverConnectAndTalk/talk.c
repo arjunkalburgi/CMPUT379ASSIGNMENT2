@@ -1,32 +1,71 @@
 #include "./talk.h"
 
 void *server_thread(void * arg) {
-	printf("Connection established :P \n");
+	char *connectionestablished = "Connection established";
+	printf("Connection established \n\n");
 	int snew = *(int *) arg;
-	char str[100];
+	socket_write(snew, connectionestablished); 
+	char str[1000] = {0};
+	// char *string = malloc(100);
 
 	while (1) {
-		int num = read (snew, &str, 100);
-		// printf("%d\n", num);
+		// READ 
+		socket_read(snew, str); 
 
-		if (num < 0) {
-			close(snew); 
-			printf("Closed\n");
-			return (void *)0; 			
-		}
-
-		char * strptr = base64decode((void *)str, strlen(str)); // convert to base 256
-		strncpy(str, strptr, sizeof(str)-1); 
-		de_crypt(str); // decrypt 
-		// server sanitize 
-		// server switch (main function) server_function(str, snew);
-			// switch to ? or ! or @
-		printf ("The client sent you: %s", str);
-
-		if (str[0] == 'e') {
-			close (snew);
-			printf("Closed\n");
+		// LOGIC 
+		if (!server_logic(snew, str)) {
 			return (void *)0; 
 		}
+		
 	}
+}
+
+void socket_read(int socket, char str[]) {
+	char s[1000] = {0};
+	int num = read (socket, &s, 100);
+
+	if (num < 0) {
+		close(socket); 
+		printf("Closed\n");
+		exit(0);  			
+	}
+
+	char * strptr = base64decode((void *)s, strlen(s)); // convert to base 256
+
+	strncpy(s, strptr, sizeof(s)-1); 
+	de_crypt(s); // decrypt
+
+	// printf ("I got: %s|\n", s);
+	strncpy(str, s, 3); 
+}
+
+void socket_write(int socket, char str[]) {
+	char s[1000] = {0};
+	strncpy(s, str, strlen(str)-1); 
+
+	// client sanitize (formatting)
+	do_crypt(s); // encrypt
+
+	char * strptr = base64encode((void *)s, strlen(s)); // convert to base64
+	strncpy(s, strptr, sizeof(s)-1); 
+
+	write (socket, &s, strlen(s));
+}
+
+int server_logic(int socket, char str[]) {
+
+	// CHECK FOR EXIT
+	if (str[0] == 'e') {
+		close (socket);
+		printf("Closed\n");
+		return 0; 
+	}
+
+	printf ("The client sent you: %s\n", str);
+	
+	// server switch (main function) server_function(str, snew);
+		// switch to ? or ! or @
+
+	
+
 }

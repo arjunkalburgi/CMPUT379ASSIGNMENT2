@@ -7,5 +7,8 @@
 
 
 void *server_thread(void * arg); 
+void socket_read(int socket, char str[]); 
+void socket_write(int socket, char str[]); 
+int server_logic(int socket, char str[]);
 
 #endif
