@@ -4,7 +4,7 @@
 //#include "connectAndTalk.h"
 #include "../encryption/cryption.h"
 #include "../encryption/base64enc-dec.h"
-
+#include "../store/store.h"
 
 void *server_thread(void * arg); 
 void socket_read(int socket, char str[]); 

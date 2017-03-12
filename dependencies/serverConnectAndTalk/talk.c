@@ -1,13 +1,17 @@
 #include "./talk.h"
 
 void *server_thread(void * arg) {
+	// MAKE STORE
+	store* entrystore = newStore(10);
+
+	// CONNECTION ESTABLISHED 
 	char *connectionestablished = "Connection established";
 	printf("Connection established \n\n");
 	int snew = *(int *) arg;
 	socket_write(snew, connectionestablished); 
 	char str[1000] = {0};
-	// char *string = malloc(100);
 
+	// COMMUNICATE
 	while (1) {
 		// READ 
 		socket_read(snew, str); 
@@ -16,8 +20,8 @@ void *server_thread(void * arg) {
 		if (!server_logic(snew, str)) {
 			return (void *)0; 
 		}
-		
 	}
+	free(entrystore); 
 }
 
 void socket_read(int socket, char str[]) {
@@ -64,7 +68,7 @@ int server_logic(int socket, char str[]) {
 	printf ("The client sent you: %s\n", str);
 	
 	int entrynum; 
-	int maxstore = 12;
+	int maxstore = 10;
  
 	// CASE ? QUERY
 	if (str[0] == '?') {
@@ -79,7 +83,7 @@ int server_logic(int socket, char str[]) {
 		} 
 	
 		// get entry from store
-		// strncpy(entrystr, store[entrynum].entry, strlen(store[entrynum].entry)); 
+		// strncpy(entrystr, entrystore[entrynum].entry, strlen(entrystore[entrynum].entry)); 
 
 		// reply
 		// int replystrlen = strlen(entrystr); 
@@ -92,7 +96,8 @@ int server_logic(int socket, char str[]) {
 	if (str[0] == '@') {
 		int replacementstrlen;
 		char replacementstr[1000]; 
-		sscanf(str, "@%dp%d\n%s\n", &entrynum, &replacementstrlen, &replacementstr); 
+		memset(replacementstr, 0, 1000);
+		sscanf(str, "@%dp%d\n%999c\n", &entrynum, &replacementstrlen, replacementstr); 
 		
 		char reply[100];
 		// if entrynumber is bad
@@ -109,9 +114,9 @@ int server_logic(int socket, char str[]) {
 
 		// replace string
 		if (entrynum == 0) {
-			// store[entrynum].entry = "";
+			// entrystore[entrynum].entry = "";
 		} else {
-			// store[entrynum].entry = replacementstr; 
+			// entrystore[entrynum].entry = replacementstr; 
 		}
 		
 		// reply 
