@@ -2,7 +2,7 @@
 
 void *server_thread(void * arg) {
 	// MAKE STORE
-	store* entrystore = newStore(10);
+	entrystore = newStore(maxstore);
 
 	// CONNECTION ESTABLISHED 
 	char *connectionestablished = "Connection established";
@@ -68,28 +68,28 @@ int server_logic(int socket, char str[]) {
 	printf ("The client sent you: %s\n", str);
 	
 	int entrynum; 
-	int maxstore = 10;
+	char replystr[100];
+	// int maxstore = 10;
  
 	// CASE ? QUERY
 	if (str[0] == '?') {
+		char entrystr[1000]; 
 		sscanf(str, "?%d[^.]", &entrynum); 
 	
-		char reply[100];
 		// if entrynumber is bad
 		if (entrynum > maxstore) {
-			sprintf(reply, "!%de14\nNo such entry!", entrynum); 
-			socket_write(socket, reply); 
+			sprintf(replystr, "!%de14\nNo such entry!", entrynum); 
+			socket_write(socket, replystr); 
 			return 1; 
 		} 
 	
 		// get entry from store
-		// strncpy(entrystr, entrystore[entrynum].entry, strlen(entrystore[entrynum].entry)); 
+		strncpy(entrystr, entrystore[entrynum].entry, strlen(entrystore[entrynum].entry)); 
 
 		// reply
-		// int replystrlen = strlen(entrystr); 
-		// sprintf(replystr, "!%dp%d\n%s\n", entrynum, replystrlen, replystr); 
-		// socket_write(socket, replystr); 
-		// return 1; 
+		sprintf(replystr, "!%dp%d\n%s\n", entrynum, (int) strlen(entrystr), entrystr); 
+		socket_write(socket, replystr); 
+		return 1; 
 	}
 
 	// CASE @ UPDATE
@@ -99,11 +99,10 @@ int server_logic(int socket, char str[]) {
 		memset(replacementstr, 0, 1000);
 		sscanf(str, "@%dp%d\n%999c\n", &entrynum, &replacementstrlen, replacementstr); 
 		
-		char reply[100];
 		// if entrynumber is bad
 		if (entrynum > maxstore) {		
-			sprintf(reply, "!%de14\nNo such entry!", entrynum); 
-			socket_write(socket, reply); 
+			sprintf(replystr, "!%de14\nNo such entry!", entrynum); 
+			socket_write(socket, replystr); 
 			return 1; 
 		}
 
@@ -114,15 +113,15 @@ int server_logic(int socket, char str[]) {
 
 		// replace string
 		if (entrynum == 0) {
-			// entrystore[entrynum].entry = "";
+			strncpy(entrystore[entrynum].entry, "", strlen(""));
 		} else {
-			// entrystore[entrynum].entry = replacementstr; 
+			strncpy(entrystore[entrynum].entry, replacementstr, strlen(replacementstr));
 		}
 		
 		// reply 
-		// sprintf(reply, "!%de0\n\n", entrynum); 
-		// socket_write(socket, reply); 
-		// return 1; 
+		sprintf(replystr, "!%de0\n\n", entrynum); 
+		socket_write(socket, replystr); 
+		return 1; 
 	}
 	
 

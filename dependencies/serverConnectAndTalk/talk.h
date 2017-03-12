@@ -6,6 +6,9 @@
 #include "../encryption/base64enc-dec.h"
 #include "../store/store.h"
 
+extern int maxstore; 
+store* entrystore; 
+
 void *server_thread(void * arg); 
 void socket_read(int socket, char str[]); 
 void socket_write(int socket, char str[]); 

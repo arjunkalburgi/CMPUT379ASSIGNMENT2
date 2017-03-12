@@ -11,5 +11,6 @@
 
 #define	MY_PORT	8080
 #define NUM_THREADS 10
+int maxstore; 
 
 #endif
