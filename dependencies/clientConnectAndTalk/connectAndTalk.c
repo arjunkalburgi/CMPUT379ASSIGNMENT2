@@ -152,6 +152,7 @@ int sanitize(char buffer[]) {
 		memcpy(substring, &buffer[1], len);
 
 		printf("the n value is %s \n",substring );
+		strcat(buffer, "\r\n");
 		printf("message is %s \n", buffer);
 
 	}
@@ -182,7 +183,6 @@ int sanitize(char buffer[]) {
 					memcpy(buffer, "clean", 5);
 					break;
 				}
-				
 				int j = 0;
 				int k = i;
 				while(isdigit((int)buffer[k+1])){
@@ -196,26 +196,38 @@ int sanitize(char buffer[]) {
 				if(k == strlen(buffer)-2){
 					check = 0;
 					printf("no new line after number, doesnt work\n");
-					break;
+					return 0;
 				}
 
 				else{
 					fgets(var, sizeof(var), stdin);
 					//strcat(buffer, '\n');
+					strcat(buffer, "\r\n");
 					strcat(buffer, var);
-					printf("the n'th value is %s \n",substring );
+					strcat(buffer, "\r\n");
+					int entrynum;
+					int replacementstrlen;
+					char replacementstr[1000];
+					sscanf(buffer, "@%dp%d\n%999c", &entrynum, &replacementstrlen, replacementstr); 
 
-					printf("the length of the update message should be %s \n",len_of_update);
+					//printf("the n'th value is %s \n",substring );
+					printf("the n'th value is %d \n", entrynum );
+
+					printf("the length of the update message should be %d \n",replacementstrlen);
+
+//					printf("the length of the update message should be %s \n",len_of_update);
 
 					printf("the actual length of the update message is %zu \n",strlen(var)-1);
-
-					printf("message is %s \n", buffer);
+					if(replacementstrlen != (strlen(var)-1)){
+						printf("lengths not equal\n");\
+						return 0;
+						
+					}
+					printf("message is %s \n", replacementstr);
+					printf("entire message is \n%s \n", buffer);
 				}
-
-				
 			}
 		}
-
 	}
 	// CHECK FOR EXIT
 	return check; 
