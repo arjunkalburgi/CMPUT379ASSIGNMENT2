@@ -63,9 +63,62 @@ int server_logic(int socket, char str[]) {
 
 	printf ("The client sent you: %s\n", str);
 	
-	// server switch (main function) server_function(str, snew);
-		// switch to ? or ! or @
+	int entrynum; 
+	int maxstore = 12;
+ 
+	// CASE ? QUERY
+	if (str[0] == '?') {
+		sscanf(str, "?%d[^.]", &entrynum); 
+	
+		// if entrynumber is bad
+		if (entrynum > maxstore) {
+			char reply[100];
+			sprintf(reply, "!%de14\nNo such entry!", entrynum); 
+			socket_write(socket, reply); 
+			return 1; 
+		} 
+	
+		// get entrynum from store
+		// strncpy(entrystr, store[entrynum].entry, strlen(store[entrynum].entry)); 
 
+		// create reply string
+		// int replystrlen = strlen(entrystr); 
+		// sprintf(replystr, "!%dp%d\n%s\n", entrynum, replystrlen, replystr); 
+		// socket_write(socket, replystr); 
+		// return 1; 
+	}
+
+	// CASE @ UPDATE
+	if (str[0] == '@') {
+		int replacementstrlen;
+		char replacementstr[1000]; 
+		sscanf(str, "@%dp%d\n%s\n", &entrynum, &replacementstrlen, &replacementstr); 
+		
+		char reply[100];
+		// if entrynumber is bad
+		if (entrynum > maxstore) {		
+			sprintf(reply, "!%de14\nNo such entry!", entrynum); 
+			socket_write(socket, reply); 
+			return 1; 
+		}
+
+		// if replacementstrlen is bad
+		if (strlen(replacementstr) != replacementstrlen) {
+			// corrupted through socket. reject
+		}
+
+		// replace string
+		if (entrynum == 0) {
+			store[entrynum].entry = "";
+		} else {
+			store[entrynum].entry = replacementstr; 
+		}
+		
+		// reply 
+		// sprintf(replystr, "!%de0\n\n", entrynum); 
+		// socket_write(socket, replystr); 
+		// return 1; 
+	}
 	
 
 }
