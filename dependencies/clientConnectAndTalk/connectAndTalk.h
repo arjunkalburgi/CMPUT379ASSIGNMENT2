@@ -11,6 +11,7 @@
 void connectAndTalk(int sock); 
 void socket_write(int socket, char str[]);
 void socket_read(int socket);
-int sanitize(char str[]);
+int sanitize(char inputstr[], char outputstr[]);
+int client_logic(int socket, char str[]); 
 
 #endif

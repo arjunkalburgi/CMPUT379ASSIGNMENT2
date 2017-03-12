@@ -42,7 +42,10 @@ void connect_and_talk() {
 	while (1) {
 		// WRITE
 		fgets(str, sizeof(str), stdin); // blocks
-		socket_write(sock, str);
+		if (!client_logic(sock, str)) {
+			printf("Try again - here\n");
+			continue;
+		}
 
 		// READ
 		// socket_read(sock); // blocks
@@ -51,20 +54,24 @@ void connect_and_talk() {
 	}
 }
 
-void socket_write(int socket, char str[]) {
-	char str_buf[1000] = {0};
-	strncpy(str_buf, str, strlen(str)-1); 
-
+int client_logic(int socket, char str[]) {
 	if(str[0] == 'e'){
 		printf("TY\n");
 		close(socket); 
 		exit(0); 
 	}
 
-	if (!sanitize(str_buf)) {
-		close(socket); 
-		exit(0); 
+	char outputstr[1000]; 
+	if (!sanitize(str, outputstr)) {
+		return 0; 
 	}
+
+	socket_write(socket, outputstr); 
+}
+
+void socket_write(int socket, char str[]) {
+	char str_buf[1000] = {0};
+	strncpy(str_buf, str, strlen(str)-1); 
 
 	do_crypt(str_buf); // encrypt
 
@@ -118,12 +125,9 @@ void socket_read(int socket) {
 		// 38
 
 		*/
-
-
-
 }
 
-int sanitize(char buffer[]) {
+int sanitize(char inputstr[], char outputstr[]) {
 	/*
 		Return 0 for failure
 		Return 1 to continue to send message
@@ -132,14 +136,14 @@ int sanitize(char buffer[]) {
 	char var[100];
 	int check = 1;
 
-	if (buffer[0] == '?') {
+	if (inputstr[0] == '?') {
 		printf("? --> inquiry about n'th entry\n");
-		int len = strlen(buffer); 
+		int len = strlen(inputstr)-1; 
 		//printf("%d is length\n", len);
 		//char inquired_line[len-1];
 		int i;
 		for(i = 1; i < len; i++){
-			if(isdigit((int)buffer[i])>0){
+			if(isdigit((int)inputstr[i])>0){
 				//printf("%d str is good so far\n", i);
 			}
 			else{
@@ -149,12 +153,13 @@ int sanitize(char buffer[]) {
 			}
 		}
 		char substring[len];
-		memcpy(substring, &buffer[1], len);
+		memcpy(substring, &inputstr[1], len);
 
 		printf("the n value is %s \n",substring );
-		strcat(buffer, "\r\n");
-		printf("message is %s \n", buffer);
-
+		strcat(inputstr, "\r\n");
+		printf("message is %s \n", inputstr);
+		strncpy(outputstr, inputstr, len+1); 
+		return 1;
 	}
 	/*
 	else if ((str[0] == 'e')&&(str[1]=='n')&&(str[2]=='d')) {
@@ -163,37 +168,37 @@ int sanitize(char buffer[]) {
 		return; 
 	}
 	*/
-	else if (buffer[0] == '@'){
+	else if (inputstr[0] == '@'){
 		printf("@ --> update n'th entry \n");
-		printf("%zu \n",strlen(buffer));
-		int len = strlen(buffer);
+		printf("%zu \n",strlen(inputstr));
+		int len = strlen(inputstr)-1;
 		int i;
 		for(i = 1; i < len; i++){
-			if(isdigit((int)buffer[i])>0){
+			if(isdigit((int)inputstr[i])>0){
 				//printf("%d digit so far\n", i);
 			}
-			else if(buffer[i] == 'p'){
+			else if(inputstr[i] == 'p'){
 				char substring[i];
-				memcpy(substring, &buffer[1], i-1);
+				memcpy(substring, &inputstr[1], i-1);
 				//printf("the n value is %s \n",substring );
 
-				if(buffer[i+1] == '0'){
+				if(inputstr[i+1] == '0'){
 					printf("clean?\n");
-					fgets(buffer, sizeof(buffer), stdin);
-					memcpy(buffer, "clean", 5);
+					fgets(inputstr, sizeof(inputstr), stdin);
+					memcpy(inputstr, "clean", 5);
 					break;
 				}
 				int j = 0;
 				int k = i;
-				while(isdigit((int)buffer[k+1])){
+				while(isdigit((int)inputstr[k+1])){
 					j++;
 					k++;
 				}
 				char len_of_update[j];
-				memcpy(len_of_update, &buffer[i+1], j);
+				memcpy(len_of_update, &inputstr[i+1], j);
 				printf("the length of the update message is %s \n",len_of_update);
 				
-				if(k == strlen(buffer)-2){
+				if(k == strlen(inputstr)-2){
 					check = 0;
 					printf("no new line after number, doesnt work\n");
 					return 0;
@@ -201,14 +206,15 @@ int sanitize(char buffer[]) {
 
 				else{
 					fgets(var, sizeof(var), stdin);
-					//strcat(buffer, '\n');
-					strcat(buffer, "\r\n");
-					strcat(buffer, var);
-					strcat(buffer, "\r\n");
+					//strcat(inputstr, '\n');
+					strncpy(outputstr, inputstr, len+1); 
+					strcat(outputstr, "\r\n");
+					strcat(outputstr, var);
+					strcat(outputstr, "\r\n");
 					int entrynum;
 					int replacementstrlen;
 					char replacementstr[1000];
-					sscanf(buffer, "@%dp%d\n%999c", &entrynum, &replacementstrlen, replacementstr); 
+					sscanf(outputstr, "@%dp%d\n%999c", &entrynum, &replacementstrlen, replacementstr); 
 
 					//printf("the n'th value is %s \n",substring );
 					printf("the n'th value is %d \n", entrynum );
@@ -224,7 +230,8 @@ int sanitize(char buffer[]) {
 						
 					}
 					printf("message is %s \n", replacementstr);
-					printf("entire message is \n%s \n", buffer);
+					printf("entire message is \n%s \n", outputstr);
+					return 1; 
 				}
 			}
 		}

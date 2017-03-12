@@ -74,10 +74,11 @@ int server_logic(int socket, char str[]) {
 	// CASE ? QUERY
 	if (str[0] == '?') {
 		char entrystr[1000]; 
-		sscanf(str, "?%d[^.]", &entrynum); 
+		sscanf(str, "?%d ", &entrynum); 
 	
 		// if entrynumber is bad
 		if (entrynum > maxstore) {
+			printf("entrynum > maxstore (%d > %d)\n", entrynum, maxstore);
 			sprintf(replystr, "!%de14\nNo such entry!", entrynum); 
 			socket_write(socket, replystr); 
 			return 1; 
