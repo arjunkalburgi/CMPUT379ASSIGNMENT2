@@ -55,6 +55,12 @@ void socket_write(int socket, char str[]) {
 	char str_buf[1000] = {0};
 	strncpy(str_buf, str, strlen(str)-1); 
 
+	if(str[0] == 'e'){
+		printf("TY\n");
+		close(socket); 
+		exit(0); 
+	}
+
 	if (!sanitize(str_buf)) {
 		close(socket); 
 		exit(0); 
@@ -123,109 +129,94 @@ int sanitize(char buffer[]) {
 		Return 1 to continue to send message
 	*/
 
-	// CHECK FOR EXIT
-	if (buffer[0] == 'e') {
-		printf("TY\n");
-		return 0; 
+	char var[100];
+	int check = 1;
+
+	if (buffer[0] == '?') {
+		printf("? --> inquiry about n'th entry\n");
+		int len = strlen(buffer); 
+		//printf("%d is length\n", len);
+		//char inquired_line[len-1];
+		int i;
+		for(i = 1; i < len; i++){
+			if(isdigit((int)buffer[i])>0){
+				//printf("%d str is good so far\n", i);
+			}
+			else{
+				printf("dont work, not a digit\n");
+				check = 0;
+				break;
+			}
+		}
+		char substring[len];
+		memcpy(substring, &buffer[1], len);
+
+		printf("the n value is %s \n",substring );
+		printf("message is %s \n", buffer);
+
 	}
-
-	// CHECK FOR "?" MESSAGE
-	// if proper format return 1; else return 0
-	return 1;
-	// CHECK FOR "@" MESSAGE
-	// if proper format return 1; else return 0
-
-	printf("Something went wrong and we were not able to verify your message. Program will exit."); 
-	return 0; 
 	/*
-
-
-			if (str[0] == '?') {
-				printf("? --> inquiry about n'th entry\n");
-				int len = strlen(str) - 2; 
-				//printf("%d is length\n", len);
-				//char inquired_line[len-1];
-				int i;
-				for(i = 1; i < len; i++){
-					if(isdigit((int)str[i])>0){
-						//printf("%d str is good so far\n", i);
-					}
-					else{
-						printf("dont work, not a digit\n");
-						check = 0;
-						break;
-					}
-				}
-				char substring[len];
-				memcpy(substring, &str[1], len);
-
-				printf("the n value is %s \n",substring );
-			}
-
-			else if ((str[0] == 'e')&&(str[1]=='n')&&(str[2]=='d')) {
-				printf("TY\n");
-				close (s);
-				return; 
-			}
-			else if (str[0] == '@'){
-				printf("@ --> update n'th entry \n");
-				int len = strlen(str)-2;
-				int i;
-				for(i = 1; i < len; i++){
-					if(isdigit((int)str[i])>0){
-						//printf("%d digit so far\n", i);
-					}
-					else if(str[i] == 'p'){
-						char substring[i];
-						memcpy(substring, &str[1], i-1);
-						//printf("the n value is %s \n",substring );
-
-						if(str[i+1] == '0'){
-							printf("clean?\n");
-							fgets(str, sizeof(str), stdin);
-							memcpy(str, "clean", 5);
-							break;
-						}
-						
-						int j = 0;
-						int k = i;
-						while(isdigit((int)str[k+1])){
-							j++;
-							k++;
-						}
-						char len_of_update[j];
-						memcpy(len_of_update, &str[i+1], j);
-						//printf("the length of the update message is %s \n",len_of_update);
-						
-						if(str[k+1] != '\n'){
-							check = 0;
-							printf("no new line after number, doesnt work\n");
-							break;
-						}
-
-						else{
-							fgets(str, sizeof(str), stdin);
-
-							printf("the n'th value is %s \n",substring );
-
-							printf("the length of the update message should be %s \n",len_of_update);
-
-							printf("the actual length of the update message is %zu \n",strlen(str)-1);
-
-							printf("message is %s \n", str);
-						}
-
-						
-					}
-				}
-
-			}
-		}
-		if(!check){
-			continue;
-		}
-
-
+	else if ((str[0] == 'e')&&(str[1]=='n')&&(str[2]=='d')) {
+		printf("TY\n");
+		close (s);
+		return; 
+	}
 	*/
+	else if (buffer[0] == '@'){
+		printf("@ --> update n'th entry \n");
+		printf("%zu \n",strlen(buffer));
+		int len = strlen(buffer);
+		int i;
+		for(i = 1; i < len; i++){
+			if(isdigit((int)buffer[i])>0){
+				//printf("%d digit so far\n", i);
+			}
+			else if(buffer[i] == 'p'){
+				char substring[i];
+				memcpy(substring, &buffer[1], i-1);
+				//printf("the n value is %s \n",substring );
 
+				if(buffer[i+1] == '0'){
+					printf("clean?\n");
+					fgets(buffer, sizeof(buffer), stdin);
+					memcpy(buffer, "clean", 5);
+					break;
+				}
+				
+				int j = 0;
+				int k = i;
+				while(isdigit((int)buffer[k+1])){
+					j++;
+					k++;
+				}
+				char len_of_update[j];
+				memcpy(len_of_update, &buffer[i+1], j);
+				printf("the length of the update message is %s \n",len_of_update);
+				
+				if(k == strlen(buffer)-2){
+					check = 0;
+					printf("no new line after number, doesnt work\n");
+					break;
+				}
+
+				else{
+					fgets(var, sizeof(var), stdin);
+					//strcat(buffer, '\n');
+					strcat(buffer, var);
+					printf("the n'th value is %s \n",substring );
+
+					printf("the length of the update message should be %s \n",len_of_update);
+
+					printf("the actual length of the update message is %zu \n",strlen(var)-1);
+
+					printf("message is %s \n", buffer);
+				}
+
+				
+			}
+		}
+
+	}
+	// CHECK FOR EXIT
+	return check; 
 }
