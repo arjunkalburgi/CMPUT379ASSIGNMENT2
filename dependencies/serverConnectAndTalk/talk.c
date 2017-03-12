@@ -70,18 +70,18 @@ int server_logic(int socket, char str[]) {
 	if (str[0] == '?') {
 		sscanf(str, "?%d[^.]", &entrynum); 
 	
+		char reply[100];
 		// if entrynumber is bad
 		if (entrynum > maxstore) {
-			char reply[100];
 			sprintf(reply, "!%de14\nNo such entry!", entrynum); 
 			socket_write(socket, reply); 
 			return 1; 
 		} 
 	
-		// get entrynum from store
+		// get entry from store
 		// strncpy(entrystr, store[entrynum].entry, strlen(store[entrynum].entry)); 
 
-		// create reply string
+		// reply
 		// int replystrlen = strlen(entrystr); 
 		// sprintf(replystr, "!%dp%d\n%s\n", entrynum, replystrlen, replystr); 
 		// socket_write(socket, replystr); 
@@ -109,14 +109,14 @@ int server_logic(int socket, char str[]) {
 
 		// replace string
 		if (entrynum == 0) {
-			store[entrynum].entry = "";
+			// store[entrynum].entry = "";
 		} else {
-			store[entrynum].entry = replacementstr; 
+			// store[entrynum].entry = replacementstr; 
 		}
 		
 		// reply 
-		// sprintf(replystr, "!%de0\n\n", entrynum); 
-		// socket_write(socket, replystr); 
+		// sprintf(reply, "!%de0\n\n", entrynum); 
+		// socket_write(socket, reply); 
 		// return 1; 
 	}
 	
