@@ -3,7 +3,7 @@
 void socket_write(int socket, char str[]) {
 	char s[1000] = {0};
 	strncpy(s, str, strlen(str)-1); 
-
+	//printf("socket_write : %s\n",str );
 	do_crypt(s); // encrypt
 
 	char * strptr = base64encode((void *)s, strlen(s)); // convert to base64
@@ -14,7 +14,8 @@ void socket_write(int socket, char str[]) {
 
 void socket_read(int socket, char str[]) {
 	char s[1000] = {0}; 
-
+	//printf("socket_read : %s\n",str );
+	
 	int num = read (socket, &s, 100);
 	if (num < 0) {
 		close(socket); 

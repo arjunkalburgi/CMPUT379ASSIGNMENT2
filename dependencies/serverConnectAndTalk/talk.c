@@ -17,6 +17,7 @@ void *server_thread(void * arg) {
 	char str[1000] = {0};
 	while (1) {
 		// READ 
+		bzero(str, sizeof(str));
 		socket_read(snew, str); 
 
 		// LOGIC 
