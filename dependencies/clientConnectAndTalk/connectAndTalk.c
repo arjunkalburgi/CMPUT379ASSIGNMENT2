@@ -184,18 +184,6 @@ int sanitize(char inputstr[], char outputstr[]) {
 	return check; 
 }
 
-void socket_write(int socket, char str[]) {
-	char str_buf[1000] = {0};
-	strncpy(str_buf, str, strlen(str)-1); 
-
-	do_crypt(str_buf); // encrypt
-
-	char * strptr = base64encode((void *)str_buf, strlen(str_buf)); // convert to base64
-	strncpy(str_buf, strptr, sizeof(str_buf)-1); 
-
-	write (socket, &str_buf, strlen(str_buf));
-}
-
 void client_logic_read(int socket) {
 	char instr[1000]; 
 	socket_read(socket, instr); // blocks until read 
@@ -241,17 +229,4 @@ void client_logic_read(int socket) {
 		printf("Server: Entry %d contains: '%s'\n", entrynum, replystr);
 		return; 
 	}
-}
-
-void socket_read(int socket, char str[]) {
-	char s[1000] = {0}; 
-
-	int num = read (socket, &s, 100);
-
-	char * strptr = base64decode((void *)s, strlen(s)); // convert to base 256
-	
-	strncpy(s, strptr, sizeof(s)-1); 
-	de_crypt(s); // decrypt
-
-	strncpy(str, s, strlen(s)); 
 }
