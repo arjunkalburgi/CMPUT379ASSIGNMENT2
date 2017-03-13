@@ -13,20 +13,20 @@ clean:
 	@rm -f client
 	@rm -f server
 
-client: client.c $(cCAT) cryption.o base64.o talk.o
+client: client.c $(cCAT) cryption.o base64enc-dec.o socketTalk.o
 	$(CC) $< $(cCAT) cryption.o base64enc-dec.o socketTalk.o -lcrypto -o client 
 
-server: server.c $(sC) $(sT) cryption.o base64.o store.o talk.o
+server: server.c $(sC) $(sT) cryption.o base64enc-dec.o store.o socketTalk.o
 	$(CC) $< $(sC) $(sT) cryption.o base64enc-dec.o store.o socketTalk.o -pthread -lcrypto -o server
 
 cryption.o: $(encryp)
 	$(CC) $< -c
 
-base64.o: $(base)
+base64enc-dec.o: $(base)
 	$(CC) $< -c
 
 store.o: $(store)
 	$(CC) $< -c
 
-talk.o: $(talk) 
+socketTalk.o: $(talk) 
 	$(CC) $< -c
