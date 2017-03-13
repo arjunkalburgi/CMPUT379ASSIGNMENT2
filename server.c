@@ -4,7 +4,7 @@ int main() {
 	// char str[100];
 	// int	snew, fromlength;
 	// struct	sockaddr_in	from;
-	maxstore = 10; 
+	maxstore = 20; 
 
 	int sock = create_socket(); 
 	connectClients(sock); 
