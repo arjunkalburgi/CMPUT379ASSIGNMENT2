@@ -48,20 +48,23 @@ int server_logic(int socket, char str[]) {
 		// get vars
 		char entrystr[1000]; 
 		sscanf(str, "?%d ", &entrynum); 
-	
 		// if entrynumber is bad
 		if (entrynum > maxstore) {
 			printf("entrynum > maxstore (%d > %d)\n", entrynum, maxstore);
 			sprintf(replystr, "!%de14\nNo such entry!", entrynum); 
+			printf("replystr ?1: %s\n ", replystr);
 			socket_write(socket, replystr); 
 			return 1; 
 		} 
 	
 		// get entry from store
 		strncpy(entrystr, entrystore[entrynum].entry, strlen(entrystore[entrynum].entry)); 
+		printf("entry store: %s\n", entrystore[entrynum].entry);
 
+		//this is where we are encountering some sort of error
 		// reply
 		sprintf(replystr, "!%dp%d\n%s\n", entrynum, (int) strlen(entrystr), entrystr); 
+		printf("replystr ?2: %s\n ", replystr);
 		socket_write(socket, replystr); 
 		return 1; 
 	}
@@ -85,6 +88,7 @@ int server_logic(int socket, char str[]) {
 		// if entrynumber is bad
 		if (entrynum > maxstore) {		
 			sprintf(replystr, "!%de14\nNo such entry!", entrynum); 
+			printf("replystr @1: %s\n ", replystr);
 			socket_write(socket, replystr); 
 			return 1; 
 		}
@@ -103,6 +107,7 @@ int server_logic(int socket, char str[]) {
 		
 		// reply 
 		sprintf(replystr, "!%de0\n\n", entrynum); 
+		printf("replystr @2: %s\n ", replystr);
 		socket_write(socket, replystr); 
 		return 1; 
 	}
