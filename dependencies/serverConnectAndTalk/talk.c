@@ -44,6 +44,7 @@ int server_logic(int socket, char str[]) {
  
 	// CASE ? QUERY
 	if (str[0] == '?') {
+		// get vars
 		char entrystr[1000]; 
 		sscanf(str, "?%d ", &entrynum); 
 	
@@ -66,10 +67,19 @@ int server_logic(int socket, char str[]) {
 
 	// CASE @ UPDATE
 	if (str[0] == '@') {
+		// get vars
+		char * firstpart;
 		int replacementstrlen;
-		char replacementstr[1000]; 
-		memset(replacementstr, 0, 1000);
-		sscanf(str, "@%dp%d\n%999c\n", &entrynum, &replacementstrlen, replacementstr); 
+		
+		firstpart = strtok (str,"\n");
+		sscanf(firstpart, "@%dp%d", &entrynum, &replacementstrlen); 
+		
+		char replacementstr[replacementstrlen]; 
+		memset(replacementstr, 0, replacementstrlen);
+		
+		char format[30]; 
+		sprintf(format, "@%%dp%%d %%%dc ", replacementstrlen); 
+		sscanf(str, format, &entrynum, &replacementstrlen, replacementstr); 
 		
 		// if entrynumber is bad
 		if (entrynum > maxstore) {		

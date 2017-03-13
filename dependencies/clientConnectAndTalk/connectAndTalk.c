@@ -69,6 +69,7 @@ int client_logic_write(int socket, char str[]) {
 	}
 
 	socket_write(socket, outputstr); 
+	bzero(outputstr, strlen(outputstr));
 }
 
 int sanitize(char inputstr[], char outputstr[]) {
@@ -243,9 +244,11 @@ void client_logic_read(int socket) {
 		char replystr[msglen]; 
 		memset(replystr, 0, msglen);
 		char format[30]; 
-		sscanf(instr, "!%d%s%d %999c ", &entrynum, &flag, &msglen, replystr); 
+		sprintf(format, "!%%d%%s%%d %%%dc ", msglen); // "!%d%s%d %(msglen)c "
+		sscanf(instr, format, &entrynum, &flag, &msglen, replystr); 
 
 		printf("Server: Entry %d contains: '%s'\n", entrynum, replystr);
 		return; 
 	}
 }
+
