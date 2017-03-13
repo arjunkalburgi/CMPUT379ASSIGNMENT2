@@ -107,25 +107,36 @@ int sanitize(char inputstr[], char outputstr[]) {
 	}
 	*/
 	else if (inputstr[0] == '@'){
+		char var2[1000];
+		bzero(var2, sizeof(var2));
 		printf("@ --> update n'th entry \n");
 		printf("strlen of inputstr: %zu \n",strlen(inputstr));
 		int len = strlen(inputstr)-1;
 		int i;
+		bzero(var, sizeof(var));
 		fgets(var, sizeof(var), stdin);
 		//strcat(inputstr, '\n');
+		bzero(outputstr, sizeof(outputstr));
 		strncpy(outputstr, inputstr, len+1); 
 		strcat(outputstr, "\r\n");
 		strcat(outputstr, var);
-		strcat(outputstr, "\r\n");
+		//strcat(outputstr, "\r\n");
 		int entrynum;
 		int replacementstrlen;
 		char replacementstr[1000];
-		char var2[1000];
-		sscanf(outputstr, "@%d%c%d\n%999c", &entrynum, var2, &replacementstrlen, replacementstr); 
+		//bzero(replacementstr, sizeof(replacementstr));
+		//char var2[1000];
+		sscanf(outputstr, "@%d%c%d\n%c", &entrynum, var2, &replacementstrlen, replacementstr); 
 
 		//printf("the n'th value is %s \n",substring );
 		printf("the n'th value is %d \n", entrynum );
-
+		printf("command is %s\n", var2);
+		if(var2 == "p"){
+			printf("correct letter: p\n");
+		}
+		if(replacementstrlen == 0){
+			printf("replacementstrlen is %d: need to clean\n", replacementstrlen);
+		}
 		printf("the length of the update message should be %d \n",replacementstrlen);
 		printf("the actual length of the update message is %zu \n",strlen(var)-1);
 		if(replacementstrlen != (strlen(var)-1)){

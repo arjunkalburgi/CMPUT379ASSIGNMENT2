@@ -17,6 +17,7 @@ void *server_thread(void * arg) {
 	char str[1000] = {0};
 	while (1) {
 		// READ 
+		bzero(str, sizeof(str));
 		socket_read(snew, str); 
 
 		// LOGIC 
@@ -70,7 +71,8 @@ int server_logic(int socket, char str[]) {
 		char replacementstr[1000]; 
 		memset(replacementstr, 0, 1000);
 		sscanf(str, "@%dp%d\n%999c\n", &entrynum, &replacementstrlen, replacementstr); 
-		
+		//printf("replystr: %s\n", replystr);
+
 		// if entrynumber is bad
 		if (entrynum > maxstore) {		
 			sprintf(replystr, "!%de14\nNo such entry!", entrynum); 
