@@ -196,49 +196,6 @@ void socket_write(int socket, char str[]) {
 }
 
 void client_logic_read() {
-	char s[1000] = {0}; 
-
-	int num = read (socket, &s, 100);
-
-	char * strptr = base64decode((void *)s, strlen(s)); // convert to base 256
-	
-	strncpy(s, strptr, sizeof(s)-1); 
-	de_crypt(s); // decrypt
-
-	printf ("Server: %s\n", s);
-	
-	/*int messagesize; 
-	char s[100] = {0}; 
-
-	int num = read (socket, &s, 100);
-
-	char * strptr = base64decode((void *)s, strlen(s)); // convert to base 256
-	strncpy(s, strptr, sizeof(s)-1); 
-	de_crypt(s); // decrypt
-
-	// CASE: NOT EMPTY
-		// !12p30
-			// s[0] = '!'; 
-			// if s[indexOf('p')] => works 
-			// s[indexOf('p')] - s[indexOf('0')] = messagesize
-		// message
-		// print the message
-			
-
-	// CASE: EMPTY 
-		// !12e0
-		//
-		// print it's empty (read spec)
-
-		// !47e14
-		// No such entry
-		// print no such entry
-	
-	// CASE: START 
-		// CMPUT379 Whiteboard Server v0
-		// 38
-
-		*/
 	char instr[1000]; 
 	socket_read(socket, instr); // blocks until read 
 
