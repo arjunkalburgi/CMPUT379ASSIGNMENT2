@@ -1,7 +1,7 @@
 #include "./connectAndTalk.h"
 
 void connect_and_talk() {
-	int	sock, number;
+	int	number;
 
 	struct	sockaddr_in	server;
 
@@ -14,7 +14,6 @@ void connect_and_talk() {
 		exit (1);
 	}
 
-	char outstr[1000] = {0};
 	printf("start\n");
 
 
@@ -35,17 +34,17 @@ void connect_and_talk() {
 		exit (1);
 	}
 
+	// set up exit signal
+	signal(SIGINT, orderly_exit);
+
 	// wait for connection established message
 	connectionestablished = 0; 
 	client_logic_read(sock);
-	
 
 	while (1) {
 		// WRITE
-		bzero(outstr, strlen(outstr));
-		fgets(outstr, sizeof(outstr), stdin); // blocks
-		if (!client_logic_write(sock, outstr)) {
-			printf("Try again - here\n");
+		if (!client_logic_write()) {
+			printf("Try again\n");
 			continue;
 		}
 
@@ -56,11 +55,14 @@ void connect_and_talk() {
 	}
 }
 
-int client_logic_write(int socket, char str[]) {
-	if(str[0] == 'e'){
-		printf("TY\n");
-		close(socket); 
-		exit(0); 
+int client_logic_write() {
+	char str[1000] = {0};
+	bzero(str, strlen(str));
+	printf("?10, @9p4 or Exit\n");
+	fgets(str, sizeof(str), stdin); // blocks
+
+	if(str[0] == 'E') {
+		orderly_exit(); 
 	}
 
 	char outputstr[1000]; 
@@ -68,7 +70,7 @@ int client_logic_write(int socket, char str[]) {
 		return 0; 
 	}
 
-	socket_write(socket, outputstr); 
+	socket_write(sock, outputstr); 
 	bzero(outputstr, strlen(outputstr));
 }
 
@@ -79,7 +81,6 @@ int sanitize(char inputstr[], char outputstr[]) {
 	*/
 
 	char var[100];
-	int check = 1;
 
 	if (inputstr[0] == '?') {
 		printf("? --> inquiry about n'th entry\n");
@@ -131,13 +132,13 @@ int sanitize(char inputstr[], char outputstr[]) {
 		printf("entire message is \n%s \n", outputstr);
 		return 1; 
 	}
-	// CHECK FOR EXIT
-	return check; 
+
+	return 0; 
 }
 
-void client_logic_read(int socket) {
+void client_logic_read(int sock) {
 	char instr[1000]; 
-	socket_read(socket, instr); // blocks until read 
+	socket_read(sock, instr); // blocks until read 
 
 	// now instr is the server's message
 	printf ("Server: %s\n", instr);
@@ -183,3 +184,11 @@ void client_logic_read(int socket) {
 	}
 }
 
+void orderly_exit() {
+	char exat[4]; 
+	sprintf(exat, "Exit");
+	socket_write(sock, exat); 
+	close(sock);
+	printf("\nThank You but Please Come backkkkkkkkkkkk\n");
+	exit(0); 
+}

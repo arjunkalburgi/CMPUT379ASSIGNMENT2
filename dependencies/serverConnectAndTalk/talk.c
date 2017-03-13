@@ -31,7 +31,7 @@ void *server_thread(void * arg) {
 int server_logic(int socket, char str[]) {
 
 	// CHECK FOR EXIT
-	if (str[0] == 'e') {
+	if (str[0] == 'E') {
 		close (socket);
 		printf("Closed\n");
 		return 0; 
