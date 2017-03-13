@@ -99,13 +99,7 @@ int sanitize(char inputstr[], char outputstr[]) {
 		strncpy(outputstr, inputstr, len+1); 
 		return 1;
 	}
-	/*
-	else if ((str[0] == 'e')&&(str[1]=='n')&&(str[2]=='d')) {
-		printf("TY\n");
-		close (s);
-		return; 
-	}
-	*/
+
 	else if (inputstr[0] == '@'){
 		char var2[1000];
 		bzero(var2, sizeof(var2));
@@ -115,100 +109,26 @@ int sanitize(char inputstr[], char outputstr[]) {
 		int i;
 		bzero(var, sizeof(var));
 		fgets(var, sizeof(var), stdin);
-		//strcat(inputstr, '\n');
 		bzero(outputstr, sizeof(outputstr));
 		strncpy(outputstr, inputstr, len+1); 
-		strcat(outputstr, "\r\n");
 		strcat(outputstr, var);
-		//strcat(outputstr, "\r\n");
 		int entrynum;
 		int replacementstrlen;
 		char replacementstr[1000];
-		//bzero(replacementstr, sizeof(replacementstr));
-		//char var2[1000];
 		sscanf(outputstr, "@%d%c%d\n%c", &entrynum, var2, &replacementstrlen, replacementstr); 
-
-		//printf("the n'th value is %s \n",substring );
-		printf("the n'th value is %d \n", entrynum );
-		printf("command is %s\n", var2);
 		if(var2 == "p"){
-			printf("correct letter: p\n");
+			//printf("correct letter: p\n");
 		}
 		if(replacementstrlen == 0){
 			printf("replacementstrlen is %d: need to clean\n", replacementstrlen);
 		}
-		printf("the length of the update message should be %d \n",replacementstrlen);
-		printf("the actual length of the update message is %zu \n",strlen(var)-1);
 		if(replacementstrlen != (strlen(var)-1)){
 			printf("lengths not equal\n");\
 			return 0;
 			
 		}
-		printf("message is %s \n", replacementstr);
 		printf("entire message is \n%s \n", outputstr);
 		return 1; 
-		/*
-		for(i = 1; i < len; i++){
-			if(isdigit((int)inputstr[i])>0){
-				printf("%d index; is a digit\n", i);
-			}
-			else if(inputstr[i] == 'p'){
-				char substring[i];
-				memcpy(substring, &inputstr[1], i-1);
-				//printf("the n value is %s \n",substring );
-
-				if(inputstr[i+1] == '0'){
-					printf("clean?\n");
-					fgets(inputstr, sizeof(inputstr), stdin);
-					memcpy(inputstr, "clean", 5);
-					break;
-				}
-				int j = 0;
-				int k = i;
-				while(isdigit((int)inputstr[k+1])){
-					j++;
-					k++;
-				}
-				char len_of_update[j];
-				memcpy(len_of_update, &inputstr[i+1], j);
-				printf("the length of the update message is %s \n",len_of_update);
-				
-				if(k == strlen(inputstr)-2){
-					check = 0;
-					printf("no new line after number, doesnt work\n");
-					return 0;
-				}
-
-				else{
-					fgets(var, sizeof(var), stdin);
-					//strcat(inputstr, '\n');
-					strncpy(outputstr, inputstr, len+1); 
-					strcat(outputstr, "\r\n");
-					strcat(outputstr, var);
-					strcat(outputstr, "\r\n");
-					int entrynum;
-					int replacementstrlen;
-					char replacementstr[1000];
-					sscanf(outputstr, "@%dp%d\n%999c", &entrynum, &replacementstrlen, replacementstr); 
-
-					//printf("the n'th value is %s \n",substring );
-					printf("the n'th value is %d \n", entrynum );
-
-					printf("the length of the update message should be %d \n",replacementstrlen);
-
-					// printf("the length of the update message should be %s \n",len_of_update);
-					if(replacementstrlen != (strlen(var)-1)){
-						printf("lengths not equal\n");\
-						return 0;
-						
-					}
-					printf("message is %s \n", replacementstr);
-					printf("entire message is \n%s \n", outputstr);
-					return 1; 
-				}
-			}
-		}
-		*/
 	}
 	// CHECK FOR EXIT
 	return check; 
