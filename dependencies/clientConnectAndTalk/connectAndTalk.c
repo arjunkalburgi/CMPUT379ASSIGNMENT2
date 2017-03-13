@@ -14,7 +14,7 @@ void connect_and_talk() {
 		exit (1);
 	}
 
-	char str[1000] = {0};
+	char outstr[1000] = {0};
 	printf("start\n");
 
 
@@ -36,25 +36,26 @@ void connect_and_talk() {
 	}
 
 	// wait for connection established message
-	socket_read(sock);
+	client_logic_read();
 	
 
 	while (1) {
 		// WRITE
-		fgets(str, sizeof(str), stdin); // blocks
-		if (!client_logic(sock, str)) {
+		bzero(outstr, strlen(outstr));
+		fgets(outstr, sizeof(outstr), stdin); // blocks
+		if (!client_logic_write(sock, outstr)) {
 			printf("Try again - here\n");
 			continue;
 		}
 
 		// READ
-		// socket_read(sock); // blocks
+		client_logic_read(); // blocks
 
 		sleep(2);
 	}
 }
 
-int client_logic(int socket, char str[]) {
+int client_logic_write(int socket, char str[]) {
 	if(str[0] == 'e'){
 		printf("TY\n");
 		close(socket); 
@@ -67,64 +68,6 @@ int client_logic(int socket, char str[]) {
 	}
 
 	socket_write(socket, outputstr); 
-}
-
-void socket_write(int socket, char str[]) {
-	char str_buf[1000] = {0};
-	strncpy(str_buf, str, strlen(str)-1); 
-
-	do_crypt(str_buf); // encrypt
-
-	char * strptr = base64encode((void *)str_buf, strlen(str_buf)); // convert to base64
-	strncpy(str_buf, strptr, sizeof(str_buf)-1); 
-
-	write (socket, &str_buf, strlen(str_buf));
-}
-
-void socket_read(int socket) {
-	char s[1000] = {0}; 
-
-	int num = read (socket, &s, 100);
-
-	char * strptr = base64decode((void *)s, strlen(s)); // convert to base 256
-	
-	strncpy(s, strptr, sizeof(s)-1); 
-	de_crypt(s); // decrypt
-
-	printf ("Server: %s\n", s);
-	
-	/*int messagesize; 
-	char s[100] = {0}; 
-
-	int num = read (socket, &s, 100);
-
-	char * strptr = base64decode((void *)s, strlen(s)); // convert to base 256
-	strncpy(s, strptr, sizeof(s)-1); 
-	de_crypt(s); // decrypt
-
-	// CASE: NOT EMPTY
-		// !12p30
-			// s[0] = '!'; 
-			// if s[indexOf('p')] => works 
-			// s[indexOf('p')] - s[indexOf('0')] = messagesize
-		// message
-		// print the message
-			
-
-	// CASE: EMPTY 
-		// !12e0
-		//
-		// print it's empty (read spec)
-
-		// !47e14
-		// No such entry
-		// print no such entry
-	
-	// CASE: START 
-		// CMPUT379 Whiteboard Server v0
-		// 38
-
-		*/
 }
 
 int sanitize(char inputstr[], char outputstr[]) {
@@ -221,7 +164,7 @@ int sanitize(char inputstr[], char outputstr[]) {
 
 					printf("the length of the update message should be %d \n",replacementstrlen);
 
-//					printf("the length of the update message should be %s \n",len_of_update);
+					// printf("the length of the update message should be %s \n",len_of_update);
 
 					printf("the actual length of the update message is %zu \n",strlen(var)-1);
 					if(replacementstrlen != (strlen(var)-1)){
@@ -238,4 +181,118 @@ int sanitize(char inputstr[], char outputstr[]) {
 	}
 	// CHECK FOR EXIT
 	return check; 
+}
+
+void socket_write(int socket, char str[]) {
+	char str_buf[1000] = {0};
+	strncpy(str_buf, str, strlen(str)-1); 
+
+	do_crypt(str_buf); // encrypt
+
+	char * strptr = base64encode((void *)str_buf, strlen(str_buf)); // convert to base64
+	strncpy(str_buf, strptr, sizeof(str_buf)-1); 
+
+	write (socket, &str_buf, strlen(str_buf));
+}
+
+void client_logic_read() {
+	char s[1000] = {0}; 
+
+	int num = read (socket, &s, 100);
+
+	char * strptr = base64decode((void *)s, strlen(s)); // convert to base 256
+	
+	strncpy(s, strptr, sizeof(s)-1); 
+	de_crypt(s); // decrypt
+
+	printf ("Server: %s\n", s);
+	
+	/*int messagesize; 
+	char s[100] = {0}; 
+
+	int num = read (socket, &s, 100);
+
+	char * strptr = base64decode((void *)s, strlen(s)); // convert to base 256
+	strncpy(s, strptr, sizeof(s)-1); 
+	de_crypt(s); // decrypt
+
+	// CASE: NOT EMPTY
+		// !12p30
+			// s[0] = '!'; 
+			// if s[indexOf('p')] => works 
+			// s[indexOf('p')] - s[indexOf('0')] = messagesize
+		// message
+		// print the message
+			
+
+	// CASE: EMPTY 
+		// !12e0
+		//
+		// print it's empty (read spec)
+
+		// !47e14
+		// No such entry
+		// print no such entry
+	
+	// CASE: START 
+		// CMPUT379 Whiteboard Server v0
+		// 38
+
+		*/
+	char instr[1000]; 
+	socket_read(socket, instr); // blocks until read 
+
+	// now instr is the server's message
+	printf ("Server: %s\n", instr);
+
+	// CASE: START (CONNECTION ESTABLISHED)
+	if (!connectionestablished) {
+		sprintf(instr, "CMPUT379 Whiteboard Server v0\n%d\n", &maxstore); 
+		connectionestablished = 1; 
+		return; 
+	}
+
+	int entrynum, msglen; 
+	char flag; 
+	
+	// analyze the string
+	char * firstpart;
+	firstpart = strtok (instr,"\n");
+	sscanf(firstpart, "!%d%s%d", &entrynum, &flag, &msglen); 
+
+	// CASE 0 ERROR
+	if (flag == 'e' && msglen == 0) {
+		printf("Server: Entry sucessfully written\n");
+		return; 
+	}
+
+	// CASE !0 ERROR
+	if (flag == 'e' && msglen !=0) {
+		printf("Server: Err. %d is not a valid entry index.\n", entrynum);
+		return; 
+	}
+	
+	// CASE PASS 
+	if (flag == 'p') {
+		char replystr[msglen]; 
+		memset(replystr, 0, msglen);
+		char format[30]; 
+		sscanf(instr, "!%d%s%d %999c ", &entrynum, &flag, &msglen, replystr); 
+
+		printf("Server: Entry %d contains: '%c'\n", entrynum, replystr);
+		return; 
+	}
+}
+
+void socket_read(int socket, char str[]) {
+	char s[1000] = {0}; 
+
+	int num = read (socket, &s, 100);
+
+	char * strptr = base64decode((void *)s, strlen(s)); // convert to base 256
+	
+	strncpy(s, strptr, sizeof(s)-1); 
+	de_crypt(s); // decrypt
+
+	strncpy(str, s, strlen(s)); 
 }
