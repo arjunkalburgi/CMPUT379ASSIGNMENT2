@@ -9,9 +9,9 @@ void *server_thread(void * arg) {
 
 	// CONNECTION ESTABLISHED
 	printf("Connection established \n\n");
-	char connectionestablished[50];
-	sprintf(connectionestablished, "CMPUT379 Whiteboard Server v0\n%d\n", maxstore); 
-	socket_write(snew, connectionestablished); 
+	char connest[50];
+	sprintf(connest, "CMPUT379 Whiteboard Server v0\n%d\n", maxstore+1); 
+	socket_write(snew, connest); 
 	
 	// COMMUNICATE
 	char str[1000] = {0};

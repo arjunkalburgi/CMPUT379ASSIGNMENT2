@@ -36,7 +36,8 @@ void connect_and_talk() {
 	}
 
 	// wait for connection established message
-	client_logic_read();
+	connectionestablished = 0; 
+	client_logic_read(sock);
 	
 
 	while (1) {
@@ -49,7 +50,7 @@ void connect_and_talk() {
 		}
 
 		// READ
-		client_logic_read(); // blocks
+		client_logic_read(sock); // blocks
 
 		sleep(2);
 	}
@@ -195,7 +196,7 @@ void socket_write(int socket, char str[]) {
 	write (socket, &str_buf, strlen(str_buf));
 }
 
-void client_logic_read() {
+void client_logic_read(int socket) {
 	char instr[1000]; 
 	socket_read(socket, instr); // blocks until read 
 
@@ -204,7 +205,8 @@ void client_logic_read() {
 
 	// CASE: START (CONNECTION ESTABLISHED)
 	if (!connectionestablished) {
-		sprintf(instr, "CMPUT379 Whiteboard Server v0\n%d\n", &maxstore); 
+		sscanf(instr, "CMPUT379 Whiteboard Server v0\n%d\n", &maxstore); 
+		printf("The maximum entrynumber in the store is %d\n", maxstore);
 		connectionestablished = 1; 
 		return; 
 	}
@@ -236,7 +238,7 @@ void client_logic_read() {
 		char format[30]; 
 		sscanf(instr, "!%d%s%d %999c ", &entrynum, &flag, &msglen, replystr); 
 
-		printf("Server: Entry %d contains: '%c'\n", entrynum, replystr);
+		printf("Server: Entry %d contains: '%s'\n", entrynum, replystr);
 		return; 
 	}
 }
