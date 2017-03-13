@@ -89,8 +89,7 @@ int sanitize(char inputstr[], char outputstr[]) {
 		for(i = 1; i < len; i++){
 			if(!isdigit((int)inputstr[i])>0){
 				printf("dont work, not a digit\n");
-				check = 0;
-				break;
+				return 0; 
 			}
 		}
 		int entrynum;
@@ -137,7 +136,7 @@ int sanitize(char inputstr[], char outputstr[]) {
 }
 
 void client_logic_read(int sock) {
-	char instr[1000]; 
+	char instr[1000] = {0}; 
 	socket_read(sock, instr); // blocks until read 
 
 	// now instr is the server's message
