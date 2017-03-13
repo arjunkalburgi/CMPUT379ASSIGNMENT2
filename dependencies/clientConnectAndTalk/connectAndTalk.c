@@ -83,23 +83,17 @@ int sanitize(char inputstr[], char outputstr[]) {
 	if (inputstr[0] == '?') {
 		printf("? --> inquiry about n'th entry\n");
 		int len = strlen(inputstr)-1; 
-		//printf("%d is length\n", len);
-		//char inquired_line[len-1];
 		int i;
 		for(i = 1; i < len; i++){
-			if(isdigit((int)inputstr[i])>0){
-				//printf("%d str is good so far\n", i);
-			}
-			else{
+			if(!isdigit((int)inputstr[i])>0){
 				printf("dont work, not a digit\n");
 				check = 0;
 				break;
 			}
 		}
-		char substring[len];
-		memcpy(substring, &inputstr[1], len);
-
-		printf("the n value is %s \n",substring );
+		int entrynum;
+		sscanf(inputstr, "?%d\n", &entrynum); 
+		printf("the n value is %d \n", entrynum );
 		strcat(inputstr, "\r\n");
 		printf("message is %s \n", inputstr);
 		strncpy(outputstr, inputstr, len+1); 
@@ -114,12 +108,38 @@ int sanitize(char inputstr[], char outputstr[]) {
 	*/
 	else if (inputstr[0] == '@'){
 		printf("@ --> update n'th entry \n");
-		printf("%zu \n",strlen(inputstr));
+		printf("strlen of inputstr: %zu \n",strlen(inputstr));
 		int len = strlen(inputstr)-1;
 		int i;
+		fgets(var, sizeof(var), stdin);
+		//strcat(inputstr, '\n');
+		strncpy(outputstr, inputstr, len+1); 
+		strcat(outputstr, "\r\n");
+		strcat(outputstr, var);
+		strcat(outputstr, "\r\n");
+		int entrynum;
+		int replacementstrlen;
+		char replacementstr[1000];
+		char var2[1000];
+		sscanf(outputstr, "@%d%c%d\n%999c", &entrynum, var2, &replacementstrlen, replacementstr); 
+
+		//printf("the n'th value is %s \n",substring );
+		printf("the n'th value is %d \n", entrynum );
+
+		printf("the length of the update message should be %d \n",replacementstrlen);
+		printf("the actual length of the update message is %zu \n",strlen(var)-1);
+		if(replacementstrlen != (strlen(var)-1)){
+			printf("lengths not equal\n");\
+			return 0;
+			
+		}
+		printf("message is %s \n", replacementstr);
+		printf("entire message is \n%s \n", outputstr);
+		return 1; 
+		/*
 		for(i = 1; i < len; i++){
 			if(isdigit((int)inputstr[i])>0){
-				//printf("%d digit so far\n", i);
+				printf("%d index; is a digit\n", i);
 			}
 			else if(inputstr[i] == 'p'){
 				char substring[i];
@@ -166,8 +186,6 @@ int sanitize(char inputstr[], char outputstr[]) {
 					printf("the length of the update message should be %d \n",replacementstrlen);
 
 					// printf("the length of the update message should be %s \n",len_of_update);
-
-					printf("the actual length of the update message is %zu \n",strlen(var)-1);
 					if(replacementstrlen != (strlen(var)-1)){
 						printf("lengths not equal\n");\
 						return 0;
@@ -179,6 +197,7 @@ int sanitize(char inputstr[], char outputstr[]) {
 				}
 			}
 		}
+		*/
 	}
 	// CHECK FOR EXIT
 	return check; 
