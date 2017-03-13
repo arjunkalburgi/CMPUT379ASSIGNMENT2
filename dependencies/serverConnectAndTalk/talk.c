@@ -4,14 +4,17 @@ void *server_thread(void * arg) {
 	// MAKE STORE
 	entrystore = newStore(maxstore);
 
-	// CONNECTION ESTABLISHED 
-	char *connectionestablished = "Connection established";
-	printf("Connection established \n\n");
+	// SET CONNECTION
 	int snew = *(int *) arg;
-	socket_write(snew, connectionestablished); 
-	char str[1000] = {0};
 
+	// CONNECTION ESTABLISHED
+	printf("Connection established \n\n");
+	char connest[50];
+	sprintf(connest, "CMPUT379 Whiteboard Server v0\n%d\n", maxstore+1); 
+	socket_write(snew, connest); 
+	
 	// COMMUNICATE
+	char str[1000] = {0};
 	while (1) {
 		// READ 
 		socket_read(snew, str); 
@@ -114,9 +117,9 @@ int server_logic(int socket, char str[]) {
 
 		// replace string
 		if (entrynum == 0) {
-			strncpy(entrystore[entrynum].entry, "", strlen(""));
+			strncpy(entrystore[entrynum-1].entry, "", strlen(""));
 		} else {
-			strncpy(entrystore[entrynum].entry, replacementstr, strlen(replacementstr));
+			strncpy(entrystore[entrynum-1].entry, replacementstr, strlen(replacementstr));
 		}
 		
 		// reply 
@@ -124,6 +127,4 @@ int server_logic(int socket, char str[]) {
 		socket_write(socket, replystr); 
 		return 1; 
 	}
-	
-
 }
