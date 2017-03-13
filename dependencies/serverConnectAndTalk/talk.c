@@ -22,7 +22,7 @@ void *server_thread(void * arg) {
 
 		// LOGIC 
 		if (!server_logic(snew, str)) {
-			return (void *)0; 
+			break; 
 		}
 	}
 	free(entrystore); 
@@ -95,8 +95,8 @@ int server_logic(int socket, char str[]) {
 		}
 
 		// replace string
-		if (entrynum == 0) {
-			strncpy(entrystore[entrynum-1].entry, "", strlen(""));
+		if (replacementstrlen == 0) {
+			strncpy(entrystore[entrynum-1].entry, "", strlen("")); 
 		} else {
 			strncpy(entrystore[entrynum-1].entry, replacementstr, strlen(replacementstr));
 		}
