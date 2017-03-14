@@ -37,7 +37,7 @@ int server_logic(int socket, char str[]) {
 		return 0; 
 	}
 
-	printf ("The client sent you: %s\n", str);
+	printf ("The client sent you: \n%s\n", str);
 	
 	int entrynum; 
 	char replystr[100];
@@ -56,13 +56,16 @@ int server_logic(int socket, char str[]) {
 			socket_write(socket, replystr); 
 			return 1; 
 		} 
-	
-		// get entry from store
-		strncpy(entrystr, entrystore[entrynum].entry, strlen(entrystore[entrynum].entry)); 
-		printf("entry store: %s\n", entrystore[entrynum].entry);
+		printf("entrynum: %d\n", entrynum); //entrynum is right
+		printf("entrystore[entrynum].entry: %s\n",entrystore[entrynum].entry);
+		// get entry from store, this is not getting anything
+		strncpy(entrystr, entrystore[entrynum-1].entry, strlen(entrystore[entrynum-1].entry)); 
+		//printf("entry store: %s\n", entrystore[entrynum].entry);
 
-		//this is where we are encountering some sort of error
+		//this is where we are encountering some sort of error, entrystr is not decrypted, or not the right message
 		// reply
+		printf("entrystr ERROR HERE ?2: %s\n ", entrystr);
+
 		sprintf(replystr, "!%dp%d\n%s\n", entrynum, (int) strlen(entrystr), entrystr); 
 		printf("replystr ?2: %s\n ", replystr);
 		socket_write(socket, replystr); 
@@ -82,8 +85,15 @@ int server_logic(int socket, char str[]) {
 		memset(replacementstr, 0, replacementstrlen);
 		
 		char format[30]; 
-		sprintf(format, "@%%dp%%d %%%dc ", replacementstrlen); 
+		sprintf(format, "@%%dp%%d\n%dc ", replacementstrlen); 
 		sscanf(str, format, &entrynum, &replacementstrlen, replacementstr); 
+		printf("ERROR OCCURRING HERE--> data: str, format, entrynum, replacementstrlen, replacementstr\n");
+		//printf(data);
+		printf("str: %s\n",str );
+		printf("format :%s\n", format);
+		printf("entrynum: %d\n",entrynum );
+		printf("replacementstrlen: %d\n", replacementstrlen);
+		printf("replacementstr: %s\n", replacementstr);
 		
 		// if entrynumber is bad
 		if (entrynum > maxstore) {		
@@ -102,7 +112,10 @@ int server_logic(int socket, char str[]) {
 		if (replacementstrlen == 0) {
 			strncpy(entrystore[entrynum-1].entry, "", strlen("")); 
 		} else {
+			printf("replacementstr: %s\n replacementstr len: %zu\n", replacementstr, strlen(replacementstr));
 			strncpy(entrystore[entrynum-1].entry, replacementstr, strlen(replacementstr));
+			printf("entrystore[entrynum].entry: %s\n", entrystore[entrynum].entry);
+			printf("entrystore[entrynum-1].entry: %s\n", entrystore[entrynum-1].entry);
 		}
 		
 		// reply 
