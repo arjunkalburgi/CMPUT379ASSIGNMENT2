@@ -10,10 +10,15 @@ void socket_write(int socket, char str[]) {
 	strncpy(s, strptr, sizeof(s)-1); 
 
 	write (socket, &s, strlen(s));
+	//printf("socket_write: %s\n", str);
+	//printf("socket_write_s: %s\n", s);
+
 }
 
 void socket_read(int socket, char str[]) {
 	char s[1000] = {0}; 
+	//printf("socket_read: %s\n", str);
+
 	//printf("socket_read : %s\n",str );
 	
 	int num = read (socket, &s, 100);
@@ -27,6 +32,8 @@ void socket_read(int socket, char str[]) {
 	
 	strncpy(s, strptr, sizeof(s)-1); 
 	de_crypt(s); // decrypt
-
+	//printf("socket_read2: %s\n", s);
 	strncpy(str, s, strlen(s)); 
+	//printf("socket_read3: %s\n", str);
+
 }

@@ -69,7 +69,7 @@ int client_logic_write() {
 	if (!sanitize(str, outputstr)) {
 		return 0; 
 	}
-
+	printf("og outputstr: %s\n", outputstr);
 	socket_write(sock, outputstr); 
 	bzero(outputstr, strlen(outputstr));
 }
