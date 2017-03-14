@@ -5,7 +5,7 @@ void *server_thread(void * arg) {
 	entrystore = newStore(maxstore);
 
 	// SET CONNECTION
-	int snew = *(int *) arg;
+	int snew = *(int *) arg; 
 
 	// CONNECTION ESTABLISHED
 	printf("Connection established \n\n");
@@ -36,15 +36,13 @@ int server_logic(int socket, char str[]) {
 		printf("Closed\n");
 		return 0; 
 	}
-	char src[40];
 	char dest[100];
-  
 	memset(dest, '\0', sizeof(dest));
 	strcpy(dest, str);
 
 	printf ("The client sent you: \n%s\n", str);
-	printf("beginning of server_logic, str: \n%s\n", str);
-	printf("dest test: \n%s\n", dest);
+	//printf("beginning of server_logic, str: \n%s\n", str);
+	//printf("dest test: \n%s\n", dest);
 	int entrynum; 
 	char replystr[100];
 	// int maxstore = 10;
@@ -54,7 +52,7 @@ int server_logic(int socket, char str[]) {
 		// get vars
 		char entrystr[1000]; 
 		sscanf(str, "?%d ", &entrynum); 
-		printf("OG str ?: \n%s\n", str);
+		//printf("OG str ?: \n%s\n", str);
 		// if entrynumber is bad
 		if (entrynum > maxstore) {
 			//printf("entrynum > maxstore (%d > %d)\n", entrynum, maxstore);
@@ -64,11 +62,11 @@ int server_logic(int socket, char str[]) {
 			return 1; 
 		} 
 		//printf("entrynum: %d\n", entrynum); //entrynum is right
-		//printf("entrystore[entrynum].entry: %s\n",entrystore[entrynum].entry);
+		//printf("str len entrystore[entrynum].entry: %zu\n",strlen(entrystore[entrynum-1].entry));
 		// get entry from store, this is not getting anything
-		strncpy(entrystr, entrystore[entrynum-1].entry, strlen(entrystore[entrynum-1].entry)); 
-		//printf("entry store: %s\n", entrystore[entrynum].entry);
-
+		strcpy(entrystr, entrystore[entrynum-1].entry); 
+		//printf("entry store: %s\n", entrystore[entrynum-1].entry);
+		//printf("entrystr: %s\n", entrystr );
 		//this is where we are encountering some sort of error, entrystr is not decrypted, or not the right message
 		// reply
 		//printf("entrystr ERROR HERE ?2: %s\n ", entrystr);
@@ -86,12 +84,13 @@ int server_logic(int socket, char str[]) {
 		int replacementstrlen;
 		
 		firstpart = strtok (str,"\n");
+		//printf("str test: \n%s\n", str);
 		strcpy(str, dest);
-		printf("dest test2: \n%s\n", dest);
-		printf("str test: \n%s\n", str);
+		//printf("dest test2: \n%s\n", dest);
+		//printf("str test: \n%s\n", str);
 
 
-		printf("OG str @, not receiving 2nd line: \n%s\n", str);
+		//printf("OG str @, not receiving 2nd line: \n%s\n", str);
 		sscanf(firstpart, "@%dp%d", &entrynum, &replacementstrlen); 
 		
 		char replacementstr[replacementstrlen]; 
@@ -111,7 +110,7 @@ int server_logic(int socket, char str[]) {
 		// if entrynumber is bad
 		if (entrynum > maxstore) {		
 			sprintf(replystr, "!%de14\nNo such entry!", entrynum); 
-			printf("replystr @1: %s\n ", replystr);
+			//printf("replystr @1: %s\n ", replystr);
 			socket_write(socket, replystr); 
 			return 1; 
 		}

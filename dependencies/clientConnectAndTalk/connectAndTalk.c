@@ -69,7 +69,7 @@ int client_logic_write() {
 	if (!sanitize(str, outputstr)) {
 		return 0; 
 	}
-	printf("og outputstr: %s\n", outputstr);
+	//printf("og outputstr: %s\n", outputstr);
 	socket_write(sock, outputstr); 
 	bzero(outputstr, strlen(outputstr));
 }
@@ -94,9 +94,9 @@ int sanitize(char inputstr[], char outputstr[]) {
 		}
 		int entrynum;
 		sscanf(inputstr, "?%d\n", &entrynum); 
-		printf("the n value is %d \n", entrynum );
+		//printf("the n value is %d \n", entrynum );
 		strcat(inputstr, "\r\n");
-		printf("message is %s \n", inputstr);
+		//printf("message is %s \n", inputstr);
 		strncpy(outputstr, inputstr, len+1); 
 		return 1;
 	}
@@ -105,7 +105,7 @@ int sanitize(char inputstr[], char outputstr[]) {
 		char var2[1000];
 		bzero(var2, sizeof(var2));
 		printf("@ --> update n'th entry \n");
-		printf("strlen of inputstr: %zu \n",strlen(inputstr));
+		//printf("strlen of inputstr: %zu \n",strlen(inputstr));
 		int len = strlen(inputstr)-1;
 		int i;
 		bzero(var, sizeof(var));
@@ -139,8 +139,11 @@ void client_logic_read(int sock) {
 	char instr[1000] = {0}; 
 	socket_read(sock, instr); // blocks until read 
 
+	char dest[100];
+	memset(dest, '\0', sizeof(dest));
+	strcpy(dest, instr);
 	// now instr is the server's message
-	printf ("Server: %s\n", instr);
+	printf ("Server: \n%s\n", instr);
 
 	// CASE: START (CONNECTION ESTABLISHED)
 	if (!connectionestablished) {
@@ -173,12 +176,21 @@ void client_logic_read(int sock) {
 	// CASE PASS 
 	if (flag == 'p') {
 		char replystr[msglen]; 
+		//hack-ey strcpy, still dont fix here though
+		strcpy(instr, dest);
 		memset(replystr, 0, msglen);
 		char format[30]; 
 		sprintf(format, "!%%d%%s%%d %%%dc ", msglen); // "!%d%s%d %(msglen)c "
 		sscanf(instr, format, &entrynum, &flag, &msglen, replystr); 
-
-		printf("Server: Entry %d contains: '%s'\n", entrynum, replystr);
+		//printf("ERROR OCCURRING HERE--> data: instr, format, entrynum, flag, msglen, replystr\n");
+		//printf(data);
+		//printf("instr: %s\n",instr );
+		//printf("format :%s\n", format);
+		//printf("entrynum: %d\n",entrynum );
+		//printf("msglen: %d\n", msglen);
+		//printf("replystr: %s\n", replystr);
+		//printf("flag %d\n", flag);
+		//printf("Server: Entry %d contains: '%s'\n", entrynum, replystr);
 		return; 
 	}
 }
