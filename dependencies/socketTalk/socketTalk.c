@@ -10,7 +10,7 @@ void socket_write(int socket, char str[]) {
 	strncpy(s, strptr, sizeof(s)-1); 
 
 	write (socket, &s, strlen(s));
-	//printf("socket_write: %s\n", str);
+	printf("socket_write: %s\n", str);
 	//printf("socket_write_s: %s\n", s);
 
 }
@@ -32,7 +32,7 @@ void socket_read(int socket, char str[]) {
 	//len of s is wrong for some reason, taking too many chars
 	strncpy(s, strptr, sizeof(s)-1); 
 	de_crypt(s); // decrypt
-	//printf("socket_read2: %s\n", s);
+	printf("socket_read2: %s\n", s);
 	
 	strncpy(str, s, strlen(s)); 
 	//printf("socket_read3: %s\n", str);

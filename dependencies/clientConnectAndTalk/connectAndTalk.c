@@ -83,7 +83,7 @@ int sanitize(char inputstr[], char outputstr[]) {
 	char var[100];
 
 	if (inputstr[0] == '?') {
-		printf("? --> inquiry about n'th entry\n");
+		//printf("? --> inquiry about n'th entry\n");
 		int len = strlen(inputstr)-1; 
 		int i;
 		for(i = 1; i < len; i++){
@@ -104,7 +104,7 @@ int sanitize(char inputstr[], char outputstr[]) {
 	else if (inputstr[0] == '@'){
 		char var2[1000];
 		bzero(var2, sizeof(var2));
-		printf("@ --> update n'th entry \n");
+		//printf("@ --> update n'th entry \n");
 		//printf("strlen of inputstr: %zu \n",strlen(inputstr));
 		int len = strlen(inputstr)-1;
 		int i;
