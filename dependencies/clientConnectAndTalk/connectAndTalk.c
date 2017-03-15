@@ -87,10 +87,14 @@ int client_logic_write() {
 		return 1; 
 	}
 
-	printf("Write your message for entry %d. (Hit enter to clear the entry)\n Message: ", entrynum);
+	printf("Write your message for entry %d. (Type 'clear' to clear the entry)\n Message: ", entrynum);
 	scanf("\n%s", msg); 
 	printf(" Would you like to encrypt your message? (1 for yes): ");
 	scanf("\n%d", &enc); 
+
+	if (strcmp(msg, "clear") == 0) {
+		bzero(msg, strlen(msg)); 
+	}
 
 	if (enc == 1) {
 		sprintf(outputstr, "@%dp", entrynum); 
@@ -98,6 +102,7 @@ int client_logic_write() {
 		bzero(outputstr, strlen(outputstr));
 		return 1; 
 	}
+
 	sprintf(outputstr, "@%dc%d\n%s\n", entrynum, (int) strlen(msg), msg); 
 	socket_write(sock, outputstr); 
 	bzero(outputstr, strlen(outputstr));
@@ -149,18 +154,8 @@ void client_logic_read(int sock) {
 		int decoded_byte_len;
 		char * strptr = base64decode((void *)s, strlen(s), &decoded_byte_len); // convert to base 256
 		memcpy(s, strptr, decoded_byte_len); 
-		de_crypt(replacementstring, decoded_byte_len); 
-		printf("Server: Entry #%d contains: %s\n", entrynum, replacementstring);
-
-		//printf("ERROR OCCURRING HERE--> data: instr, format, entrynum, flag, msglen, replystr\n");
-		//printf(data);
-		//printf("instr: %s\n",instr );
-		//printf("format :%s\n", format);
-		//printf("entrynum: %d\n",entrynum );
-		//printf("msglen: %d\n", msglen);
-		//printf("replystr: %s\n", replystr);
-		//printf("flag %d\n", flag);
-		//printf("Server: Entry %d contains: '%s'\n", entrynum, replystr);
+		de_crypt(s, decoded_byte_len);
+		printf("Server: Entry #%d contains: %s\n", entrynum, s);
 		return; 
 	}
 }
