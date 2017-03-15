@@ -50,8 +50,8 @@ void de_crypt(char intext[], int test) {
 
 	EVP_CIPHER_CTX_init(&ctx);
 	EVP_DecryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, key, iv);
-	printf("num decoded bytes: %zu\n",strlen(intext));
-	printf("test: %d\n",test);
+	//printf("num decoded bytes: %zu\n",strlen(intext));
+	//printf("test: %d\n",test);
 
 	if(!EVP_DecryptUpdate(&ctx, outbuf, &outlen, intext, test)) {
 		/* Error */

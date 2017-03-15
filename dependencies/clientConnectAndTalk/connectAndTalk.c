@@ -66,10 +66,10 @@ int client_logic_write() {
 	int action, entrynum, enc; 
 	char msg[900] = {0};
 
-	printf("1. Query (?) 2. Write/Clear (@) 3. Exit\n");
-	scanf("Which of the above options would you like: %1d", &action); 
+	printf("1. Query (?) 2. Write/Clear (@) 3. Exit\nWhich of the above options would you like:  \n");
+	scanf("%1d", &action); 
 	
-	if (action >= 1 && action <= 3) {
+	if (action <= 1 && action >= 3) {
 		printf("Please chose an option out of 1, 2 or 3.\n");
 		return 0; 
 	}
@@ -78,8 +78,8 @@ int client_logic_write() {
 		orderly_exit(); 
 	}
 
-	printf("What entry would you like to act on (1-%d): ", maxstore); 
-	scanf("Entry #%d", &entrynum); 
+	printf("What entry would you like to act on (1-%d):\nEntry # : ", maxstore); 
+	scanf("\n%d", &entrynum); 
 
 	if (action == 1) {
 		sprintf(outputstr, "?%d\n\n", entrynum); 
@@ -87,16 +87,19 @@ int client_logic_write() {
 		return 1; 
 	}
 
-	printf("Write your message for entry %d. (Hit enter to clear the entry)\n", entrynum);
-	scanf("Message: %s", msg); 
-
-	scanf("Would you like to encrypt your message? (1 for yes): %d", &enc); 
+	printf("Write your message for entry %d. (Hit enter to clear the entry)\n Message: ", entrynum);
+	scanf("\n%s", msg); 
+	printf(" Would you like to encrypt your message? (1 for yes): ");
+	scanf("\n%d", &enc); 
 
 	if (enc == 1) {
 		sprintf(outputstr, "@%dp", entrynum); 
 		socket_write_encode(sock, outputstr, msg); 
+		bzero(outputstr, strlen(outputstr));
+		printf("enc 1 ...");
+		return 1; 
 	}
-
+	printf("enc not1...");
 	sprintf(outputstr, "@%dc%d\n%s\n", entrynum, (int) strlen(msg), msg); 
 	socket_write(sock, outputstr); 
 	bzero(outputstr, strlen(outputstr));
