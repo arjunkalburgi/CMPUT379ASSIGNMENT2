@@ -131,30 +131,31 @@ void client_logic_read(int sock) {
 	sscanf(instr, "!%d%c%d\n%s", &entrynum, flag, &msglen, replacementstring); 
 
 	// CASE 0 ERROR
-	if (flag == "e" && msglen == 0) {
+	if ((strcmp(flag,"e")==0) && msglen == 0) {
 		printf("Server: Entry sucessfully written\n");
 		return; 
 	}
 
 	// CASE !0 ERROR
-	if (flag == "e" && msglen !=0) {
+	if ((strcmp(flag,"e")==0) && msglen !=0) {
 		printf("Server: Err. %d is not a valid entry index.\n", entrynum);
 		return; 
 	}
 
 	// CASE NOT ENCRYPTED DATA 
-	if (flag == "p") {
+	if (strcmp(flag,"p")==0) {
 		printf("Server: Entry #%d contains: %s\n", entrynum, replacementstring);
+
 	}
 	
 	// CASE ENCRYPTED DATA 
-	if (flag == "c") {
+	if (strcmp(flag,"c")==0) {
 		char s[1000] = {0};
 
 		int decoded_byte_len;
 		char * strptr = base64decode((void *)s, strlen(s), &decoded_byte_len); // convert to base 256
 		memcpy(s, strptr, decoded_byte_len); 
-		de_crypt(s, decoded_byte_len);
+		de_crypt(s, decoded_byte_len); 
 		printf("Server: Entry #%d contains: %s\n", entrynum, s);
 		return; 
 	}
