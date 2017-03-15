@@ -97,13 +97,13 @@ int client_logic_write() {
 	}
 
 	if (enc == 1) {
-		sprintf(outputstr, "@%dp", entrynum); 
+		sprintf(outputstr, "@%dc", entrynum); 
 		socket_write_encode(sock, outputstr, msg); 
 		bzero(outputstr, strlen(outputstr));
 		return 1; 
 	}
 
-	sprintf(outputstr, "@%dc%d\n%s\n", entrynum, (int) strlen(msg), msg); 
+	sprintf(outputstr, "@%dp%d\n%s\n", entrynum, (int) strlen(msg), msg); 
 	socket_write(sock, outputstr); 
 	bzero(outputstr, strlen(outputstr));
 	return 1; 
@@ -143,12 +143,12 @@ void client_logic_read(int sock) {
 	}
 
 	// CASE NOT ENCRYPTED DATA 
-	if (flag == "c") {
+	if (flag == "p") {
 		printf("Server: Entry #%d contains: %s\n", entrynum, replacementstring);
 	}
 	
 	// CASE ENCRYPTED DATA 
-	if (flag == "p") {
+	if (flag == "c") {
 		char s[1000] = {0};
 
 		int decoded_byte_len;

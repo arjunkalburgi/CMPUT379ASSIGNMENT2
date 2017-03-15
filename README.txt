@@ -26,7 +26,7 @@ HOW IT WORKS (MAKEFILE):
 	The Makefile is all abstracted by each dependency (/dependencies) except for clientConnectAndTalk and serverConnectAndTalk as they contain the main and vital functionality. 
 
 HOW IT DOESN'T WORK (MAKEFILE): 
-	In the server, -n entries and -f statefile options are actually not implemented due to time constraints (discussed later)
+	In the server, -n entries and -f statefile options are actually not implemented due to time constraints.
 	In the client, the keyfile is disregarded. 
 
 HOW IT WORKS (CLIENTCONNECTANDTALK): 
@@ -38,6 +38,8 @@ HOW IT WORKS (CLIENTCONNECTANDTALK):
 
 HOW IT DOESN'T WORK (CLIENTCONNECTANDTALK): 
 	String parsing is pretty messy and for the longest time we didn't understand the proper format of the string through the socket. Would have loved bullet form deliverables instead of a written spec sheet. 
+
+	The last character gets cut off :/ 
 
 HOW IT WORKS (SERVERCONNECTANDTALK): 
 	Main functions: connectClients(), server_thread() - These functions contain the creation of threads and the main thread functionality. 
@@ -56,12 +58,18 @@ HOW IT DOESN'T WORK (SERVERCONNECTANDTALK):
 	Also wrong with connectClients() is that there is no logic in place to handle the case that 100 (NUM_THREADS) threads have connected to the server. Even if it's the same client exiting and reconnecting. This is not worth implementing with the time left, but you would fix it by dynamically allocating the pthread_t thread variable and polling the threads to check on which ones have terminated so you can clear them. 
  
 HOW IT WORKS (STORE): 
+	Typedef struct and a function to allocate memory. 
 
 HOW IT DOESN'T WORK (STORE): 
+	It's a pretty useless abstraction. 
 
 HOW IT WORKS (SOCKETTALK): 
+	Main functions: socket_write_encode() - socket_write_encode() has some logic for creating the string to send to the server. It abstracts some work and keeps encryption/64coding out of client_logic. 
+
+	Other functions: socket_write(), socket_read() - both pretty useless wrappers. Don't do much. 
 
 HOW IT DOESN'T WORK (SOCKETTALK): 
+	works
 
 HOW IT WORKS (ENTRYPTION): 
 	This code is mostly taken from lab material provided in CMPUT 379 LAB. 
