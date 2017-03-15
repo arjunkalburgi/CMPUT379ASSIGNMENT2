@@ -72,7 +72,6 @@ int server_logic(int socket, char str[]) {
 			socket_write(socket, emptystr); 
 			return 1; 
 		}
-		// printf("COMING OUT AT %d AS: 1%s1 (len %d)", entrynum, entrystore[entrynum-1].entry, (int)strlen(entrystore[entrynum-1].entry)); 
 		socket_write(socket, entrystore[entrynum-1].entry); 
 		return 1; 
 	}
@@ -109,7 +108,6 @@ int server_logic(int socket, char str[]) {
 			}
 
 			bzero(entrystore[entrynum-1].entry, strlen(entrystore[entrynum-1].entry));
-			// printf("GOING INTO THE STORE AT %d: %s (len %d)\n",entrynum, str, (int)strlen(str));
 			strcpy(entrystore[entrynum-1].entry, str);
 			entrystore[entrynum-1].flag = flag; 
 		}
