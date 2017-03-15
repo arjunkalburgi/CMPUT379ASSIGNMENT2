@@ -34,7 +34,6 @@ int create_socket() {
 void connectClients(int sock) {
 	int	fromlength;
 	struct sockaddr_in from;
-	// pthread_t thread[NUM_THREADS];
 	NUM_THREADS = 100;
 
 	activeThreads = 0; 

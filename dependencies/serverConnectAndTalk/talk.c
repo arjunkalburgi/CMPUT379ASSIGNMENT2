@@ -12,8 +12,6 @@ void *server_thread(void * arg) {
 	memset(&action, 0, sizeof(struct sigaction));
 	action.sa_handler = shutdownserver;
 	sigaction(SIGTERM, &action, NULL);
-	// signal(SIGTERM, orderly_exit);
-
 	// CONNECTION ESTABLISHED
 	printf("Connection established \n\n");
 	char connest[50];
@@ -109,7 +107,6 @@ int server_logic(int socket, char str[]) {
 			}
 
 			bzero(entrystore[entrynum-1].entry, strlen(entrystore[entrynum-1].entry));
-			// printf("GOING INTO THE STORE AT %d: %s (len %d)\n",entrynum, str, (int)strlen(str));
 			strcpy(entrystore[entrynum-1].entry, str);
 			entrystore[entrynum-1].flag = flag; 
 		}
