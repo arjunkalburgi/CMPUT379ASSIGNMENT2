@@ -36,13 +36,7 @@ void socket_read(int socket, char str[]) {
 		printf("Socket broke, this is no longer safe. Run again\n");
 		exit(0);  			
 	}
-	int test;
-	char * strptr = base64decode((void *)s, strlen(s), &test); // convert to base 256
-	//len of s is wrong for some reason, taking too many chars
-	memcpy(s, strptr, test); 
-	de_crypt(s, test); // decrypt
-	//printf("socket_read2: %s\n", s);
-	
+
 	strncpy(str, s, strlen(s)); 
 	//printf("socket_read3: %s\n", str);
 	//printf("len s %zu\n", strlen(str));

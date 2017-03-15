@@ -213,8 +213,12 @@ void client_logic_read(int sock) {
 	
 	// CASE ENCRYPTED DATA 
 	if (flag == 'p') {
+		int decoded_byte_len;
+		char * strptr = base64decode((void *)s, strlen(s), &decoded_byte_len); // convert to base 256
+		memcpy(s, strptr, decoded_byte_len); 
 		de_crypt(entrytext, msglen); 
 		printf("Server: Entry #%d contains: %s\n", entrynum, entrytext);
+
 		//printf("ERROR OCCURRING HERE--> data: instr, format, entrynum, flag, msglen, replystr\n");
 		//printf(data);
 		//printf("instr: %s\n",instr );
