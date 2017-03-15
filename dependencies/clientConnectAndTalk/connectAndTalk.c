@@ -59,26 +59,48 @@ void connect_and_talk() {
 }
 
 int client_logic_write() {
-	char str[1000] = {0};
-	bzero(str, strlen(str));
-	printf("?10, @9p4 or Exit or SIGTERM\n");
-	fgets(str, sizeof(str), stdin); // blocks
+	// Return 0 for try again
+	// Return 1 for read
 
-	if(str[0] == 'E') {
+	char outputstr[1000] = {0};
+	int action, entrynum, enc; 
+	char msg[900] = {0};
+
+	printf("1. Query (?) 2. Write/Clear (@) 3. Exit\n");
+	scanf("Which of the above options would you like: %1d", &action); 
+	
+	if (action >= 1 && action <= 3) {
+		printf("Please chose an option out of 1, 2 or 3.\n");
+		return 0; 
+	}
+
+	if (action == 3) {
 		orderly_exit(); 
 	}
 
-	if (str[0] == 'S') {
-		server_shutdown();
+	printf("What entry would you like to act on (1-%d): ", maxstore); 
+	scanf("Entry #%d", &entrynum); 
+
+	if (action == 1) {
+		sprintf(outputstr, "?%d\n\n", entrynum); 
+		socket_write(sock, outputstr); 
+		return 1; 
 	}
 
-	char outputstr[1000]; 
-	if (!sanitize(str, outputstr)) {
-		return 0; 
+	printf("Write your message for entry %d. (Hit enter to clear the entry)\n", entrynum);
+	scanf("Message: %s", msg); 
+
+	scanf("Would you like to encrypt your message? (1 for yes): %d", &enc); 
+
+	if (enc == 1) {
+		sprintf(outputstr, "@%dp", entrynum); 
+		socket_write_encode(sock, outputstr, msg); 
 	}
-	//printf("og outputstr: %s\n", outputstr);
+
+	sprintf(outputstr, "@%dc%d\n%s\n", entrynum, (int) strlen(msg), msg); 
 	socket_write(sock, outputstr); 
 	bzero(outputstr, strlen(outputstr));
+	return 1; 
 }
 
 int sanitize(char inputstr[], char outputstr[]) {

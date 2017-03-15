@@ -3,16 +3,23 @@
 void socket_write(int socket, char str[]) {
 	char s[1000] = {0};
 	strncpy(s, str, strlen(str)-1); 
-	//printf("socket_write : %s\n",str );
-	do_crypt(s); // encrypt
+	
+	write (socket, &s, strlen(s));
+}
 
-	char * strptr = base64encode((void *)s, strlen(s)); // convert to base64
-	strncpy(s, strptr, sizeof(s)-1); 
+void socket_write_encode(int socket, char str[], char encryptstr[]) {
+	char s[1000] = {0};
+
+	// Encrypt and Encode the message
+	do_crypt(encryptstr); 
+	char * strptr = base64encode((void *)encryptstr, strlen(encryptstr)); // convert to base64
+	bzero(encryptstr, strlen(encryptstr)); 
+	strncpy(encryptstr, strptr, sizeof(encryptstr)-1); 
+
+	// Make and send string
+	sprintf(s, "%s%d\n%s\n", str, (int)strlen(encryptstr), encryptstr); 
 
 	write (socket, &s, strlen(s));
-	printf("socket_write: %s\n", str);
-	//printf("socket_write_s: %s\n", s);
-
 }
 
 void socket_read(int socket, char str[]) {

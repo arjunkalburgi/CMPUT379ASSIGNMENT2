@@ -50,7 +50,7 @@ HOW IT DOESN'T WORK (SERVERCONNECTANDTALK):
 	The server logic in connectClients() is supposed to be daemonized but instead it runs in the main process. It acts like a daemon though since that's the only thing it does. 
 
 	Also wrong with connectClients() is that there is no logic in place to handle the case that 100 (NUM_THREADS) threads have connected to the server. Even if it's the same client exiting and reconnecting. This is not worth implementing with the time left, but you would fix it by dynamically allocating the pthread_t thread variable and polling the threads to check on which ones have terminated so you can clear them. 
-
+ 
 HOW IT WORKS (STORE): 
 
 HOW IT DOESN'T WORK (STORE): 
