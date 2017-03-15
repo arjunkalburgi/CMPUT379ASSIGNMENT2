@@ -1,4 +1,6 @@
 CC=gcc 
+c=./dependencies/client.c
+s=./dependencies/server.c
 cCAT=./dependencies/clientConnectAndTalk/connectAndTalk.c
 sC=./dependencies/serverConnectAndTalk/connect.c
 sT=./dependencies/serverConnectAndTalk/talk.c
@@ -13,10 +15,10 @@ clean:
 	@rm -f wbc379
 	@rm -f wbs379
 
-client: client.c $(cCAT) cryption.o base64enc-dec.o socketTalk.o
+client: $(c) $(cCAT) cryption.o base64enc-dec.o socketTalk.o
 	$(CC) $< $(cCAT) cryption.o base64enc-dec.o socketTalk.o -lcrypto -o wbc379 
 
-server: server.c $(sC) $(sT) cryption.o base64enc-dec.o store.o socketTalk.o
+server: $(s) $(sC) $(sT) cryption.o base64enc-dec.o store.o socketTalk.o
 	$(CC) $< $(sC) $(sT) cryption.o base64enc-dec.o store.o socketTalk.o -pthread -lcrypto -o wbs379
 
 cryption.o: $(encryp)

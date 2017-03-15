@@ -14,7 +14,6 @@ int sock, maxstore, connectionestablished;
 
 extern void orderly_exit(); 
 void connectAndTalk(); 
-int sanitize(char inputstr[], char outputstr[]);
 int client_logic_write(); 
 void client_logic_read(int sock); 
 void orderly_exit(); 

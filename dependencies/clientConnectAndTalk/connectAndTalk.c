@@ -87,19 +87,22 @@ int client_logic_write() {
 		return 1; 
 	}
 
-	printf("Write your message for entry %d. (Hit enter to clear the entry)\n Message: ", entrynum);
+	printf("Write your message for entry %d. (Type 'clear' to clear the entry)\n Message: ", entrynum);
 	scanf("\n%s", msg); 
 	printf(" Would you like to encrypt your message? (1 for yes): ");
 	scanf("\n%d", &enc); 
+
+	if (strcmp(msg, "clear") == 0) {
+		bzero(msg, strlen(msg)); 
+	}
 
 	if (enc == 1) {
 		sprintf(outputstr, "@%dp", entrynum); 
 		socket_write_encode(sock, outputstr, msg); 
 		bzero(outputstr, strlen(outputstr));
-		printf("enc 1 ...");
 		return 1; 
 	}
-	printf("enc not1...");
+
 	sprintf(outputstr, "@%dc%d\n%s\n", entrynum, (int) strlen(msg), msg); 
 	socket_write(sock, outputstr); 
 	bzero(outputstr, strlen(outputstr));
@@ -110,7 +113,7 @@ void client_logic_read(int sock) {
 	char instr[1000] = {0}; 
 	socket_read(sock, instr); // blocks until read 
 
-	printf ("Server enc: \n%s\n", instr);
+	printf ("Server enc: %s\n", instr);
 
 	// CASE: START (CONNECTION ESTABLISHED)
 	if (!connectionestablished) {
@@ -125,33 +128,24 @@ void client_logic_read(int sock) {
 	int msglen = 0; 
 	char flag[1000]; 
 	char replacementstring[1000];
-	char * firstpart;
-	printf("instr: %s\n", instr);
 	sscanf(instr, "!%d%c%d\n%s", &entrynum, flag, &msglen, replacementstring); 
-	printf("entrynumREAL: %d\n", entrynum);
-	printf("flag: %s\n", flag);
-	printf("msglen: %d\n", msglen);
+
 	// CASE 0 ERROR
 	if ((strcmp(flag,"e")==0) && msglen == 0) {
 		printf("Server: Entry sucessfully written\n");
 		return; 
 	}
+
 	// CASE !0 ERROR
 	if ((strcmp(flag,"e")==0) && msglen !=0) {
 		printf("Server: Err. %d is not a valid entry index.\n", entrynum);
 		return; 
 	}
 
-	char entrytext[msglen]; 
-	memset(entrytext, 0, msglen);
-	char format[30]; 
-	sprintf(format, "!%%d%%s%%d %%%dc ", msglen); // "!%d%s%d %(msglen)c "
-
-	sscanf(instr, format, &entrynum, &flag, &msglen, entrytext); 
-	
 	// CASE NOT ENCRYPTED DATA 
 	if (strcmp(flag,"c")==0) {
-		printf("Server: Entry #%d contains: %s\n", entrynum, entrytext);
+		printf("Server: Entry #%d contains: %s\n", entrynum, replacementstring);
+
 	}
 	
 	// CASE ENCRYPTED DATA 
@@ -161,8 +155,8 @@ void client_logic_read(int sock) {
 		int decoded_byte_len;
 		char * strptr = base64decode((void *)s, strlen(s), &decoded_byte_len); // convert to base 256
 		memcpy(s, strptr, decoded_byte_len); 
-		de_crypt(entrytext, msglen); 
-		printf("Server: Entry #%d contains: %s\n", entrynum, entrytext);
+		de_crypt(s, decoded_byte_len); 
+		printf("Server: Entry #%d contains: %s\n", entrynum, s);
 		return; 
 	}
 }

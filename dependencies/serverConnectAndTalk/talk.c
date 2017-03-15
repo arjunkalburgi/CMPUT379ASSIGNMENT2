@@ -42,6 +42,8 @@ int server_logic(int socket, char str[]) {
 	// Return 0 to exit thread 
 	// Return 1 to continue
 
+	printf("server_logic %s\n", str);
+
 	int entrynum, replacementstrlen; 
 	char replystr[1000]; 
 
@@ -63,10 +65,15 @@ int server_logic(int socket, char str[]) {
 			return 1; 
 		} 
 
-		char entrystr[1000]; 
-		strcpy(entrystr, entrystore[entrynum-1].entry); 
-		sprintf(replystr, "!%dp%d\n%s\n", entrynum, (int) strlen(entrystr), entrystr); 
-		socket_write(socket, replystr); 
+		// EMPTY CASE 
+		if (strlen(entrystore[entrynum-1].entry) == 0) {
+			char emptystr[10]; 
+			sprintf(emptystr, "@%dp0\n\n", entrynum); 
+			socket_write(socket, emptystr); 
+			return 1; 
+		}
+		// printf("COMING OUT AT %d AS: 1%s1 (len %d)", entrynum, entrystore[entrynum-1].entry, (int)strlen(entrystore[entrynum-1].entry)); 
+		socket_write(socket, entrystore[entrynum-1].entry); 
 		return 1; 
 	}
 
@@ -75,10 +82,11 @@ int server_logic(int socket, char str[]) {
 		char saved_str[1000]; 
 		strcpy(saved_str, str); 
 
-		char *flag; 
-
-		char *firstpart = strtok(str, "\n"); 
-		sscanf(firstpart, "@%d%1c%d", &entrynum, flag, &replacementstrlen); 
+		// int entrynum= 0;
+		int replacementstrlen = 0; 
+		char flag[1000]; 
+		char replacementstr[1000];
+		sscanf(str, "@%d%c%d\n%s", &entrynum, flag, &replacementstrlen, replacementstr); 
 
 		// CASE ENTRYNUM ERROR 
 		if (entrynum > maxstore) {
@@ -89,24 +97,20 @@ int server_logic(int socket, char str[]) {
 
 		// CASE CLEAR 
 		if (replacementstrlen == 0) {
-			strncpy(entrystore[entrynum-1].entry, "", strlen("")); 
+			printf("CLEARING STORE\n");
+			bzero(entrystore[entrynum-1].entry, strlen(entrystore[entrynum-1].entry));
 			entrystore[entrynum-1].flag = '\0'; 
-		} 
-
+		} else {
 		// CASE REPLACE 
-		else {
-			char replacementstr[replacementstrlen]; 
-			char format[30]; 
-			sprintf(format, "@%%d%%1c%%d\n%%%dc\n", replacementstrlen); 
-			sscanf(str, "@%d%1c%d\n%c\n", &entrynum, flag, &replacementstrlen, replacementstr); 
-
 			// CORRUPTED DATA 
 			if (strlen(replacementstr) != replacementstrlen) {
 				printf("Data was corrupted.\n");
 				shutdownserver(); 
 			}
 
-			strncpy(entrystore[entrynum-1].entry, replacementstr, replacementstrlen);
+			bzero(entrystore[entrynum-1].entry, strlen(entrystore[entrynum-1].entry));
+			// printf("GOING INTO THE STORE AT %d: %s (len %d)\n",entrynum, str, (int)strlen(str));
+			strcpy(entrystore[entrynum-1].entry, str);
 			entrystore[entrynum-1].flag = flag; 
 		}
 
