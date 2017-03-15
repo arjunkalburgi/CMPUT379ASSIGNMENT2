@@ -70,7 +70,6 @@ int server_logic(int socket, char str[]) {
 			socket_write(socket, emptystr); 
 			return 1; 
 		}
-		// printf("COMING OUT AT %d AS: 1%s1 (len %d)", entrynum, entrystore[entrynum-1].entry, (int)strlen(entrystore[entrynum-1].entry)); 
 		socket_write(socket, entrystore[entrynum-1].entry); 
 		return 1; 
 	}

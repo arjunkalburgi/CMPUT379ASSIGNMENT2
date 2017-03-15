@@ -7,7 +7,7 @@ void connect_and_talk() {
 
 	struct	hostent		*host;
 
-	host = gethostbyname (hostname); //'localhost'
+	host = gethostbyname (hostname); 
 
 	if (host == NULL) {
 		perror ("Client: cannot get host description");
