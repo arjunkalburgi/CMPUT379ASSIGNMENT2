@@ -8,6 +8,9 @@
 #include "../socketTalk/socketTalk.h"
 
 extern int maxstore; 
+extern int activeThreads; 
+extern pthread_t thread[];
+
 store* entrystore; 
 
 void *server_thread(void * arg); 

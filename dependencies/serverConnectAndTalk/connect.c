@@ -29,20 +29,43 @@ int create_socket() {
 }
 
 void connectClients(int sock) {
-	int	i, fromlength;
-	struct sockaddr_in	from;
-	pthread_t thread[NUM_THREADS];
+	int	fromlength;
+	struct sockaddr_in from;
+	// pthread_t thread[NUM_THREADS];
+	NUM_THREADS = 10;
+	int sock_cpy = sock; 
+		
+	fd_set readfds;
+	struct timeval tv;
+	int retval;
 
-	i = 0; 
-	while (i!=-1) {
-		fromlength = sizeof (from);
-		int snew = accept (sock, (struct sockaddr*) & from, & fromlength); // look for client to connect 
-		// make a client thread 
-		if (i<NUM_THREADS) {
-			pthread_create(&thread[i], NULL, server_thread, (void *) &snew);
-			i++; 
+	/* Watch stdin (fd 0) to see when it has input. */
+	FD_ZERO(&readfds);
+	FD_SET(sock_cpy, &readfds);
+
+	/* Wait up to five seconds. */
+	tv.tv_sec = 5;
+	tv.tv_usec = 0;
+
+	activeThreads = 0; 
+	while (activeThreads!=-1) {
+
+		retval = select(sock_cpy+1, &readfds, NULL, NULL, &tv);
+		if (!retval) {
+			// no clients in 5s  
+			continue; 
+		} else if (retval) {
+
+			fromlength = sizeof (from);
+			int snew = accept (sock, (struct sockaddr*) & from, & fromlength); // look for client to connect 
+			// make a client thread 
+			if (activeThreads<NUM_THREADS) {
+				pthread_create(&thread[activeThreads], NULL, server_thread, (void *) &snew);
+				activeThreads++; 
+			}
 		}
-	}
-	// if you get a signal to stop the client, set i=-1 and join all threads 
-	// if client exits, i--
+	}	
+
+	printf("Goodbye\n");
+	exit(0);
 }

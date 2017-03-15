@@ -5,9 +5,12 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
 #include <strings.h>
 #include "clientConnectAndTalk/connectAndTalk.h"
 
-#define	MY_PORT	8080
+uint16_t MY_PORT;
+char hostname[20]; 
+char keyfile_path[100];
 
 #endif

@@ -26,6 +26,13 @@ void *server_thread(void * arg) {
 		}
 	}
 	free(entrystore); 
+
+	// THIS SHOULD HAVE A SEMAPHORE AROUND IT
+	int threadNum = snew; 
+	for (threadNum; threadNum<activeThreads; threadNum++) {
+		thread[threadNum] = thread[threadNum+1]; 
+	}
+	activeThreads--;
 }
 
 int server_logic(int socket, char str[]) {
@@ -35,6 +42,13 @@ int server_logic(int socket, char str[]) {
 		close (socket);
 		printf("Closed\n");
 		return 0; 
+	}
+
+	// CHECK FOR SHUTDOWN (SIGTERM)
+	if (str[0] == 'S') {
+		activeThreads = -1;
+		printf("SIGTERM\n");
+		return 1; 
 	}
 
 	printf ("The client sent you: %s\n", str);

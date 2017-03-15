@@ -3,14 +3,14 @@
 
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
 #include <stdio.h>
+#include <inttypes.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include "serverConnectAndTalk/connect.h"
 
-#define	MY_PORT	8080
-#define NUM_THREADS 10
 int maxstore; 
+uint16_t MY_PORT;
+char start_method[7]; 
 
 #endif

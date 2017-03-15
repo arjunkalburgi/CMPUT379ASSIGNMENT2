@@ -10,14 +10,14 @@ talk=./dependencies/socketTalk/socketTalk.c
 all: client server
 
 clean: 
-	@rm -f client
-	@rm -f server
+	@rm -f wbc379
+	@rm -f wbs379
 
 client: client.c $(cCAT) cryption.o base64enc-dec.o socketTalk.o
-	$(CC) $< $(cCAT) cryption.o base64enc-dec.o socketTalk.o -lcrypto -o client 
+	$(CC) $< $(cCAT) cryption.o base64enc-dec.o socketTalk.o -lcrypto -o wbc379 
 
 server: server.c $(sC) $(sT) cryption.o base64enc-dec.o store.o socketTalk.o
-	$(CC) $< $(sC) $(sT) cryption.o base64enc-dec.o store.o socketTalk.o -pthread -lcrypto -o server
+	$(CC) $< $(sC) $(sT) cryption.o base64enc-dec.o store.o socketTalk.o -pthread -lcrypto -o wbs379
 
 cryption.o: $(encryp)
 	$(CC) $< -c

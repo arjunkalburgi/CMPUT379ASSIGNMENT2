@@ -7,7 +7,7 @@ void connect_and_talk() {
 
 	struct	hostent		*host;
 
-	host = gethostbyname ("localhost");
+	host = gethostbyname (hostname); //'localhost'
 
 	if (host == NULL) {
 		perror ("Client: cannot get host description");
@@ -15,7 +15,6 @@ void connect_and_talk() {
 	}
 
 	printf("start\n");
-
 
 	sock = socket (AF_INET, SOCK_STREAM, 0);
 
@@ -58,11 +57,15 @@ void connect_and_talk() {
 int client_logic_write() {
 	char str[1000] = {0};
 	bzero(str, strlen(str));
-	printf("?10, @9p4 or Exit\n");
+	printf("?10, @9p4 or Exit or SIGTERM\n");
 	fgets(str, sizeof(str), stdin); // blocks
 
 	if(str[0] == 'E') {
 		orderly_exit(); 
+	}
+
+	if (str[0] == 'S') {
+		server_shutdown();
 	}
 
 	char outputstr[1000]; 
@@ -189,5 +192,15 @@ void orderly_exit() {
 	socket_write(sock, exat); 
 	close(sock);
 	printf("\nThank You but Please Come backkkkkkkkkkkk\n");
+	exit(0); 
+}
+
+void server_shutdown() {
+	char shut[7]; 
+	sprintf(shut, "SIGTERM");
+	socket_write(sock, shut); 
+	close(sock); 
+	printf("You have shut down the server\n");
+	printf("Bye\n");
 	exit(0); 
 }
