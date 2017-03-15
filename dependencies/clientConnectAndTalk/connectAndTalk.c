@@ -95,6 +95,8 @@ int client_logic_write() {
 	if (enc == 1) {
 		sprintf(outputstr, "@%dp", entrynum); 
 		socket_write_encode(sock, outputstr, msg); 
+		bzero(outputstr, strlen(outputstr));
+		return 1; 
 	}
 
 	sprintf(outputstr, "@%dc%d\n%s\n", entrynum, (int) strlen(msg), msg); 
@@ -168,11 +170,7 @@ void client_logic_read(int sock) {
 	char instr[1000] = {0}; 
 	socket_read(sock, instr); // blocks until read 
 
-	char dest[100];
-	memset(dest, '\0', sizeof(dest));
-	strcpy(dest, instr);
-	// now instr is the server's message
-	printf ("Server: \n%s\n", instr);
+	printf ("Server enc: \n%s\n", instr);
 
 	// CASE: START (CONNECTION ESTABLISHED)
 	if (!connectionestablished) {
@@ -182,10 +180,9 @@ void client_logic_read(int sock) {
 		return; 
 	}
 
+	// analyze the string
 	int entrynum, msglen; 
 	char flag; 
-	
-	// analyze the string
 	char * firstpart;
 	firstpart = strtok (instr,"\n");
 	sscanf(firstpart, "!%d%s%d", &entrynum, &flag, &msglen); 
@@ -201,16 +198,22 @@ void client_logic_read(int sock) {
 		printf("Server: Err. %d is not a valid entry index.\n", entrynum);
 		return; 
 	}
+
+	char entrytext[msglen]; 
+	memset(entrytext, 0, msglen);
+	char format[30]; 
+	sprintf(format, "!%%d%%s%%d %%%dc ", msglen); // "!%d%s%d %(msglen)c "
+	sscanf(instr, format, &entrynum, &flag, &msglen, entrytext); 
+
+	// CASE NOT ENCRYPTED DATA 
+	if (flag == 'c') {
+		printf("Server: Entry #%d contains: %s\n", entrynum, entrytext);
+	}
 	
-	// CASE PASS 
+	// CASE ENCRYPTED DATA 
 	if (flag == 'p') {
-		char replystr[msglen]; 
-		//hack-ey strcpy, still dont fix here though
-		strcpy(instr, dest);
-		memset(replystr, 0, msglen);
-		char format[30]; 
-		sprintf(format, "!%%d%%s%%d %%%dc ", msglen); // "!%d%s%d %(msglen)c "
-		sscanf(instr, format, &entrynum, &flag, &msglen, replystr); 
+		de_crypt(entrytext, msglen); 
+		printf("Server: Entry #%d contains: %s\n", entrynum, entrytext);
 		//printf("ERROR OCCURRING HERE--> data: instr, format, entrynum, flag, msglen, replystr\n");
 		//printf(data);
 		//printf("instr: %s\n",instr );
