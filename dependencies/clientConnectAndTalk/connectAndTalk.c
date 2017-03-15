@@ -213,6 +213,8 @@ void client_logic_read(int sock) {
 	
 	// CASE ENCRYPTED DATA 
 	if (flag == 'p') {
+		char s[1000] = {0};
+
 		int decoded_byte_len;
 		char * strptr = base64decode((void *)s, strlen(s), &decoded_byte_len); // convert to base 256
 		memcpy(s, strptr, decoded_byte_len); 

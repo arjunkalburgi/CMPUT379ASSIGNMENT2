@@ -26,10 +26,7 @@ void socket_write_encode(int socket, char str[], char encryptstr[]) {
 
 void socket_read(int socket, char str[]) {
 	char s[1000] = {0}; 
-	//printf("socket_read: %s\n", str);
 
-	//printf("socket_read : %s\n",str );
-	
 	int num = read (socket, &s, 100);
 	if (num < 0) {
 		close(socket); 
@@ -38,6 +35,4 @@ void socket_read(int socket, char str[]) {
 	}
 
 	strncpy(str, s, strlen(s)); 
-	//printf("socket_read3: %s\n", str);
-	//printf("len s %zu\n", strlen(str));
 }
