@@ -7,6 +7,13 @@ void *server_thread(void * arg) {
 	// SET CONNECTION
 	int snew = *(int *) arg; 
 
+	// SIGTERM 
+	struct sigaction action;
+	memset(&action, 0, sizeof(struct sigaction));
+	action.sa_handler = shutdownserver;
+	sigaction(SIGTERM, &action, NULL);
+	// signal(SIGTERM, orderly_exit);
+
 	// CONNECTION ESTABLISHED
 	printf("Connection established \n\n");
 	char connest[50];
@@ -25,13 +32,9 @@ void *server_thread(void * arg) {
 			break; 
 		}
 	}
-	free(entrystore); 
 
-	// THIS SHOULD HAVE A SEMAPHORE AROUND IT
-	int threadNum = snew; 
-	for (threadNum; threadNum<activeThreads; threadNum++) {
-		thread[threadNum] = thread[threadNum+1]; 
-	}
+	// CLOSE THREAD
+	free(entrystore); 
 	activeThreads--;
 }
 
@@ -51,7 +54,8 @@ int server_logic(int socket, char str[]) {
 	if (str[0] == 'S') {
 		activeThreads = -1;
 		printf("SIGTERM\n");
-		return 1; 
+		shutdownserver(); 
+		return 0; 
 	}
 
 	printf ("The client sent you: \n%s\n", str);
@@ -150,4 +154,9 @@ int server_logic(int socket, char str[]) {
 		socket_write(socket, replystr); 
 		return 1; 
 	}
+}
+
+void shutdownserver() {
+	printf("Bye\n");
+	exit(0); 
 }

@@ -34,7 +34,11 @@ void connect_and_talk() {
 	}
 
 	// set up exit signal
-	signal(SIGINT, orderly_exit);
+	struct sigaction action;
+	memset(&action, 0, sizeof(struct sigaction));
+	action.sa_handler = orderly_exit;
+	sigaction(SIGINT, &action, NULL);
+	// signal(SIGINT, orderly_exit);
 
 	// wait for connection established message
 	connectionestablished = 0; 

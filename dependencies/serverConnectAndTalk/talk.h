@@ -2,6 +2,7 @@
 #define _TALK_H_
 
 //#include "connectAndTalk.h"
+#include <signal.h>
 #include "../encryption/cryption.h"
 #include "../encryption/base64enc-dec.h"
 #include "../store/store.h"
@@ -15,5 +16,6 @@ store* entrystore;
 
 void *server_thread(void * arg); 
 int server_logic(int socket, char str[]);
+void shutdownserver();
 
 #endif
