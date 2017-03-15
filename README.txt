@@ -1,4 +1,4 @@
-After "make":
+# After "make":
 	To run server: ./wbs379 8080 -n entries
 	To run client: ./wbc379 localhost 8080
 
