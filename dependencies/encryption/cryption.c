@@ -37,7 +37,7 @@ void do_crypt(char intext[]) {
 	strncpy(intext, outbuf, outlen); 
 }
 
-void de_crypt(char intext[]) {
+void de_crypt(char intext[], int test) {
 	char outbuf[sizeof(intext)];
 	int outlen, tmplen, i;
 	/* Bogus key and IV: we'd normally set these from
@@ -50,8 +50,10 @@ void de_crypt(char intext[]) {
 
 	EVP_CIPHER_CTX_init(&ctx);
 	EVP_DecryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, key, iv);
+	printf("num decoded bytes: %zu\n",strlen(intext));
+	printf("test: %d\n",test);
 
-	if(!EVP_DecryptUpdate(&ctx, outbuf, &outlen, intext, strlen(intext))) {
+	if(!EVP_DecryptUpdate(&ctx, outbuf, &outlen, intext, test)) {
 		/* Error */
 		printf("ERROR IN de_crypt 56\n");
 		return;
@@ -75,6 +77,6 @@ void de_crypt(char intext[]) {
 	}
 
 	printf("\n");*/
-	bzero(intext, strlen(intext));
+	bzero(intext, test);
 	strncpy(intext, outbuf, outlen); 
 }

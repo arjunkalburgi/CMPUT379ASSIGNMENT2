@@ -5,6 +5,6 @@
 #include <string.h>
 
 void do_crypt(char intext[]); 
-void de_crypt(char intext[]); 
+void de_crypt(char intext[], int test); 
 
 #endif

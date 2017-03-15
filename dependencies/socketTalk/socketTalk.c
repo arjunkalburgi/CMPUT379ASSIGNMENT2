@@ -10,10 +10,15 @@ void socket_write(int socket, char str[]) {
 	strncpy(s, strptr, sizeof(s)-1); 
 
 	write (socket, &s, strlen(s));
+	printf("socket_write: %s\n", str);
+	//printf("socket_write_s: %s\n", s);
+
 }
 
 void socket_read(int socket, char str[]) {
 	char s[1000] = {0}; 
+	//printf("socket_read: %s\n", str);
+
 	//printf("socket_read : %s\n",str );
 	
 	int num = read (socket, &s, 100);
@@ -22,11 +27,14 @@ void socket_read(int socket, char str[]) {
 		printf("Socket broke, this is no longer safe. Run again\n");
 		exit(0);  			
 	}
-
-	char * strptr = base64decode((void *)s, strlen(s)); // convert to base 256
+	int test;
+	char * strptr = base64decode((void *)s, strlen(s), &test); // convert to base 256
+	//len of s is wrong for some reason, taking too many chars
+	memcpy(s, strptr, test); 
+	de_crypt(s, test); // decrypt
+	printf("socket_read2: %s\n", s);
 	
-	strncpy(s, strptr, sizeof(s)-1); 
-	de_crypt(s); // decrypt
-
 	strncpy(str, s, strlen(s)); 
+	//printf("socket_read3: %s\n", str);
+	//printf("len s %zu\n", strlen(str));
 }
