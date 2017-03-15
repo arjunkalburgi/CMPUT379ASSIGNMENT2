@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 typedef struct _store {
+    char *flag; 
     char entry[1000];
 } store;
 
