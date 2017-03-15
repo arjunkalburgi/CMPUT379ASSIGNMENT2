@@ -2,13 +2,17 @@
 	To run server: ./wbs379 8080 -n entries
 	To run client: ./wbc379 localhost 8080
 
-can enter 4 different inputs:
-	?[entry_number] : this will return the message at the specified entry number
-	@[entry_number][p or c][message_length] \n [message]: this will return ![entry_number]e0\n\n
-			note: as of right now, we encrypted the full message (including the "?12" and "@12p3\nhey"), as we misinterpreted the 
-			specifications. This leads to more errors from socket read and write, as decrypting (?/@/!/numbers) causes errors
-	Exit: it will close the thread 
-	SIGTERM: signal from linux, it terminates server, and closes socket, so exits client.
+Will be prompted on client to enter (1,2,or 3) for 3 possible inputs:
+	1: to Query(?)
+		a. then requests Entry# (within limit stated at top of program)
+			Should return what ever is stored in that entry #
+	2: to Write/Clear(@)
+		a. then requests Entry# (within limit stated at top of program)
+		b. requests message you wish to store
+		c. requests if you wish to encrypt it or not
+			Should return ![entry#]p0 upon success!
+	3: to Exit
+		a. will exit the client thread
 
 Did not implement:
 	keyfile
@@ -28,7 +32,7 @@ HOW IT DOESN'T WORK (MAKEFILE):
 HOW IT WORKS (CLIENTCONNECTANDTALK): 
 	Main function: connectAndTalk() - This function sets up the socket and contains the while loop to communicate with the server. 
 
-	Other important functions: client_logic_write(), client_logic_read(), sanitize() - abstractions of the logic required to read and write through the socket. 
+	Other important functions: client_logic_write(), client_logic_read() - abstractions of the logic required to read and write through the socket. 
 
 	Minor functions: orderly_exit() - signal handler for exiting the client. 
 
