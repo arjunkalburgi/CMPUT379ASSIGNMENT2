@@ -17,6 +17,8 @@ Will be prompted on client to enter (1,2,or 3) for 3 possible inputs:
 Did not implement:
 	keyfile
 	statefile
+	shared entries store 
+	
 	  
 
 HOW IT WORKS (MAKEFILE): 
