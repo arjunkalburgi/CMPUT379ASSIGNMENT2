@@ -66,7 +66,7 @@ int client_logic_write() {
 	int action, entrynum, enc; 
 	char msg[900] = {0};
 
-	printf("1. Query (?) 2. Write/Clear (@) 3. Exit\nWhich of the above options would you like:  \n");
+	printf(" 1. Query (?) 2. Write/Clear (@) 3. Exit\nWhich of the above options would you like:  \n");
 	scanf("%1d", &action); 
 	
 	if (action <= 1 && action >= 3) {
@@ -182,20 +182,23 @@ void client_logic_read(int sock) {
 	}
 
 	// analyze the string
-	int entrynum, msglen; 
-	char flag; 
+	int entrynum= 0;
+	int msglen = 0; 
+	char flag[1000]; 
+	char replacementstring[1000];
 	char * firstpart;
-	firstpart = strtok (instr,"\n");
-	sscanf(firstpart, "!%d%s%d", &entrynum, &flag, &msglen); 
-
+	printf("instr: %s\n", instr);
+	sscanf(instr, "!%d%c%d\n%s", &entrynum, flag, &msglen, replacementstring); 
+	printf("entrynumREAL: %d\n", entrynum);
+	printf("flag: %s\n", flag);
+	printf("msglen: %d\n", msglen);
 	// CASE 0 ERROR
-	if (flag == 'e' && msglen == 0) {
+	if (flag == "e" && msglen == 0) {
 		printf("Server: Entry sucessfully written\n");
 		return; 
 	}
-
 	// CASE !0 ERROR
-	if (flag == 'e' && msglen !=0) {
+	if (flag == "e" && msglen !=0) {
 		printf("Server: Err. %d is not a valid entry index.\n", entrynum);
 		return; 
 	}
@@ -204,15 +207,16 @@ void client_logic_read(int sock) {
 	memset(entrytext, 0, msglen);
 	char format[30]; 
 	sprintf(format, "!%%d%%s%%d %%%dc ", msglen); // "!%d%s%d %(msglen)c "
-	sscanf(instr, format, &entrynum, &flag, &msglen, entrytext); 
 
+	sscanf(instr, format, &entrynum, &flag, &msglen, entrytext); 
+	
 	// CASE NOT ENCRYPTED DATA 
-	if (flag == 'c') {
+	if (flag == "c") {
 		printf("Server: Entry #%d contains: %s\n", entrynum, entrytext);
 	}
 	
 	// CASE ENCRYPTED DATA 
-	if (flag == 'p') {
+	if (flag == "p") {
 		char s[1000] = {0};
 
 		int decoded_byte_len;
