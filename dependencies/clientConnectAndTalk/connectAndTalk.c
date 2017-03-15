@@ -184,9 +184,9 @@ void client_logic_read(int sock) {
 	// analyze the string
 	int entrynum, msglen; 
 	char flag; 
-	char * firstpart;
-	firstpart = strtok (instr,"\n");
-	sscanf(firstpart, "!%d%s%d", &entrynum, &flag, &msglen); 
+	char text[1000]; 
+	// char * firstpart = strtok (instr,"\n");
+	sscanf(instr, "!%d%s%d\n%s", &entrynum, &flag, &msglen, text);
 
 	// CASE 0 ERROR
 	if (flag == 'e' && msglen == 0) {
@@ -204,7 +204,7 @@ void client_logic_read(int sock) {
 	memset(entrytext, 0, msglen);
 	char format[30]; 
 	sprintf(format, "!%%d%%s%%d %%%dc ", msglen); // "!%d%s%d %(msglen)c "
-	sscanf(instr, format, &entrynum, &flag, &msglen, entrytext); 
+	sscanf(instr, format, &entrynum, flag, &msglen, entrytext); 
 
 	// CASE NOT ENCRYPTED DATA 
 	if (flag == 'c') {
